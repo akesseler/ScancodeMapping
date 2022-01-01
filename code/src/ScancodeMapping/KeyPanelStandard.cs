@@ -1,14 +1,37 @@
-﻿using System;
-using System.Drawing;
+﻿/*
+ * MIT License
+ * 
+ * Copyright (c) 2022 plexdata.de
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 using ScancodeHook.LowLevel;
+using System.Drawing;
 
 namespace ScancodeMapping
 {
     public class StandardKeyPanel : KeyPanel
     {
-        private const int LEFT   = 0;
-        private const int TOP    = 60;
-        private const int WIDTH  = 629;
+        private const int LEFT = 0;
+        private const int TOP = 60;
+        private const int WIDTH = 629;
         private const int HEIGHT = 210;
 
         private enum TLayout
@@ -114,11 +137,11 @@ namespace ScancodeMapping
 
                 if (buttonData[index].Convert)
                 {
-                    button.Text = Win32Wrapper.KeyText.GetKeyTextAtOnce( alignment, button.Keyscan, button.Text );
+                    button.Text = Win32Wrapper.KeyText.GetKeyTextAtOnce(alignment, button.Keyscan, button.Text);
                 }
                 else
                 {
-                    button.Text = Win32Wrapper.GetKeyNameText( button.Keyscan, button.Text );
+                    button.Text = Win32Wrapper.GetKeyNameText(button.Keyscan, button.Text);
                 }
 
                 this.Controls.Add(button);
@@ -255,7 +278,7 @@ namespace ScancodeMapping
         private void ShowWindowsKeys()
         {
             KeyButton btnLWin = FindButtonUseVK(VirtualKeys.VK_LWIN);
-            if ( !btnLWin.Visible )
+            if (!btnLWin.Visible)
             {
                 btnLWin.RestoreDefaults(); // No need to run through the loop twice...
                 FindButtonUseVK(VirtualKeys.VK_RWIN).RestoreDefaults();
@@ -451,13 +474,13 @@ namespace ScancodeMapping
                 new int[] {0x35, VirtualKeys.VK_OEM_MINUS, VirtualKeys.VK_OEM_2},
             };
 
-            for ( int index=0; index < layoutMap.Length; index++ )
+            for (int index = 0; index < layoutMap.Length; index++)
             {
-                if ( layout == TLayout.DE )
+                if (layout == TLayout.DE)
                 {
                     FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][1];
                 }
-                else if ( layout == TLayout.US )
+                else if (layout == TLayout.US)
                 {
                     FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][2];
                 }

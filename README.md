@@ -17,6 +17,8 @@ keys. But note, the physical keyboard key is never changed. The only change made
 program is the change of the Windows scan-code of keyboard keys. These changes are put 
 into Windows registry.
 
+Keep in mind, the program requires administrator privileges to get it run.
+
 ### Licensing
 
 The software has been published under the terms of _MIT License_.
