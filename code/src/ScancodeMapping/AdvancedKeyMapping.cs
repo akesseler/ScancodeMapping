@@ -1,8 +1,32 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.Windows.Forms;
+﻿/*
+ * MIT License
+ * 
+ * Copyright (c) 2022 plexdata.de
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 using ScancodeHook.LowLevel;
+using System;
+using System.Collections;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace ScancodeMapping
 {
@@ -36,7 +60,7 @@ namespace ScancodeMapping
             }
 
             // Do nothing on key release.
-            if ( Keyboard.IsKeyUp(flags))
+            if (Keyboard.IsKeyUp(flags))
             {
                 return;
             }
@@ -131,7 +155,7 @@ namespace ScancodeMapping
             string keyName = VirtualKeys.Name(vkeycode);
             string vkCode = "0x" + vkeycode.ToString("X4");
             string scanCode = "0x" + extended.ToString("X2") + scancode.ToString("X2");
-            
+
             // Avoid mapping to same key.
             if (scanCode == this.scancodeText1.Text)
             {
@@ -265,7 +289,7 @@ namespace ScancodeMapping
             this.applyButton.Enabled = false;
             this.actionButton.Enabled = false;
             this.actionButton.Tag = null;
-            
+
             Keyboard.Instance.Hook(this, true);
         }
 
@@ -283,8 +307,8 @@ namespace ScancodeMapping
                 // Tag content is set either to DISABLE or to RESTORE button.
                 this.UpdatePendingList(
                     this.virtualKey1,
-                    this.scancodeKey1, 
-                    this.extendedKey1, 
+                    this.scancodeKey1,
+                    this.extendedKey1,
                     (KeyButton)this.actionButton.Tag
                 );
             }
@@ -313,10 +337,10 @@ namespace ScancodeMapping
             {
                 this.UpdatePendingList(
                     this.virtualKey1,
-                    this.scancodeKey1, 
-                    this.extendedKey1, 
+                    this.scancodeKey1,
+                    this.extendedKey1,
                     button2.Keyscan.VKeyCode,
-                    button2.Keyscan.Scancode, 
+                    button2.Keyscan.Scancode,
                     button2.Keyscan.Extended
                 );
             }
@@ -324,10 +348,10 @@ namespace ScancodeMapping
             {
                 this.UpdatePendingList(
                     this.virtualKey1,
-                    this.scancodeKey1, 
+                    this.scancodeKey1,
                     this.extendedKey1,
                     this.virtualKey2,
-                    this.scancodeKey2, 
+                    this.scancodeKey2,
                     this.extendedKey2
                 );
             }
