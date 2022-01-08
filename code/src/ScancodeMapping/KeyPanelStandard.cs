@@ -23,16 +23,17 @@
  */
 
 using ScancodeHook.LowLevel;
+using System;
 using System.Drawing;
 
 namespace ScancodeMapping
 {
     public class StandardKeyPanel : KeyPanel
     {
-        private const int LEFT = 0;
-        private const int TOP = 60;
-        private const int WIDTH = 629;
-        private const int HEIGHT = 210;
+        private const Int32 LEFT = 0;
+        private const Int32 TOP = 60;
+        private const Int32 WIDTH = 629;
+        private const Int32 HEIGHT = 210;
 
         private enum TLayout
         {
@@ -41,7 +42,9 @@ namespace ScancodeMapping
         }
 
         #region Buttons' location, size and VK assignments.
-        private KeyButtonData[] buttonData = new KeyButtonData[]{
+
+        private readonly KeyButtonData[] buttonData = new KeyButtonData[]
+        {
             new KeyButtonData(0,   0,   42,  42, true,  true,  new KeyScan(VirtualKeys.VK_OEM_5,      0x29, Keyboard.STANDARD)),
             new KeyButtonData(42,  0,   42,  42, true,  false, new KeyScan(VirtualKeys.VK_1,          0x02, Keyboard.STANDARD)),
             new KeyButtonData(84,  0,   42,  42, true,  false, new KeyScan(VirtualKeys.VK_2,          0x03, Keyboard.STANDARD)),
@@ -105,12 +108,10 @@ namespace ScancodeMapping
             new KeyButtonData(530, 168, 47,  42, true,  false, new KeyScan(VirtualKeys.VK_APPS,       0x5D, Keyboard.EXTENDED)),
             new KeyButtonData(577, 168, 52,  42, true,  false, new KeyScan(VirtualKeys.VK_RCONTROL,   0x1D, Keyboard.EXTENDED)),
         };
+
         #endregion
 
-        //
-        // Summary:
-        //
-        public StandardKeyPanel(string name, int index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
+        public StandardKeyPanel(String name, Int32 index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
             : base(parent)
         {
             this.SuspendLayout();
@@ -124,18 +125,18 @@ namespace ScancodeMapping
             this.Initialize(alignment);
         }
 
-        //
-        // Summary:
-        //
         private void Initialize(TKeyboardAlignment alignment)
         {
-            for (int index = 0; index < buttonData.Length; index++)
+            for (Int32 index = 0; index < this.buttonData.Length; index++)
             {
-                KeyButton button = new KeyButton("SK" + index, (index + 1).ToString(), index, this);
-                button.Defaults = buttonData[index];
+                KeyButton button = new KeyButton("SK" + index, (index + 1).ToString(), index, this)
+                {
+                    Defaults = this.buttonData[index]
+                };
+
                 button.PrepareTooltip();
 
-                if (buttonData[index].Convert)
+                if (this.buttonData[index].Convert)
                 {
                     button.Text = Win32Wrapper.KeyText.GetKeyTextAtOnce(alignment, button.Keyscan, button.Text);
                 }
@@ -148,9 +149,6 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
         public void SetKeys(TKeyboardKeys keys)
         {
             this.SuspendLayout();
@@ -158,29 +156,26 @@ namespace ScancodeMapping
             switch (keys)
             {
                 case TKeyboardKeys.Keys101:
-                    HideOEM102Key();
-                    HideWindowsKeys();
+                    this.HideOEM102Key();
+                    this.HideWindowsKeys();
                     break;
                 case TKeyboardKeys.Keys102:
-                    HideWindowsKeys();
-                    ShowOEM102Key();
+                    this.HideWindowsKeys();
+                    this.ShowOEM102Key();
                     break;
                 case TKeyboardKeys.Keys105:
-                    ShowWindowsKeys();
-                    HideOEM102Key();
+                    this.ShowWindowsKeys();
+                    this.HideOEM102Key();
                     break;
                 case TKeyboardKeys.Keys106:
-                    ShowWindowsKeys();
-                    ShowOEM102Key();
+                    this.ShowWindowsKeys();
+                    this.ShowOEM102Key();
                     break;
             }
 
             this.ResumeLayout(true);
         }
 
-        //
-        // Summary:
-        //
         public void SetAlignment(TKeyboardAlignment alignment)
         {
             this.SuspendLayout();
@@ -188,61 +183,55 @@ namespace ScancodeMapping
             switch (alignment)
             {
                 case TKeyboardAlignment.Germany:
-                    ShowGermany();
+                    this.ShowGermany();
                     break;
                 case TKeyboardAlignment.USStandard:
-                    ShowUSStandard();
+                    this.ShowUSStandard();
                     break;
             }
 
             this.ResumeLayout(true);
         }
 
-        //
-        // Summary:
-        //
         private void HideOEM102Key()
         {
-            KeyButton btnOEM102 = FindButtonUseVK(VirtualKeys.VK_OEM_102);
+            KeyButton btnOEM102 = this.FindButtonUseVK(VirtualKeys.VK_OEM_102);
+
             if (btnOEM102.Visible)
             {
-                KeyButton btnLShift = FindButtonUseVK(VirtualKeys.VK_LSHIFT);
+                KeyButton btnLShift = this.FindButtonUseVK(VirtualKeys.VK_LSHIFT);
 
-                int helper = btnLShift.Size.Width + btnOEM102.Size.Width;
+                Int32 helper = btnLShift.Size.Width + btnOEM102.Size.Width;
 
                 btnLShift.Size = new Size(helper, btnLShift.Size.Height);
                 btnOEM102.Visible = false; // This button must be invisible in this case.
             }
         }
 
-        //
-        // Summary:
-        //
         private void ShowOEM102Key()
         {
-            KeyButton btnOEM102 = FindButtonUseVK(VirtualKeys.VK_OEM_102);
+            KeyButton btnOEM102 = this.FindButtonUseVK(VirtualKeys.VK_OEM_102);
+
             if (!btnOEM102.Visible)
             {
-                btnOEM102.RestoreDefaults(); // No need to run through the loop twice...
-                FindButtonUseVK(VirtualKeys.VK_LSHIFT).RestoreDefaults();
+                btnOEM102.RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_LSHIFT).RestoreDefaults();
             }
         }
 
-        //
-        // Summary:
-        //
         private void HideWindowsKeys()
         {
-            KeyButton btnLWin = FindButtonUseVK(VirtualKeys.VK_LWIN);
+            KeyButton btnLWin = this.FindButtonUseVK(VirtualKeys.VK_LWIN);
+
             if (btnLWin.Visible)
             {
-                KeyButton btnRWin = FindButtonUseVK(VirtualKeys.VK_RWIN);
-                KeyButton btnApps = FindButtonUseVK(VirtualKeys.VK_APPS);
-                KeyButton btnLCtrl = FindButtonUseVK(VirtualKeys.VK_LCONTROL);
-                KeyButton btnRCtrl = FindButtonUseVK(VirtualKeys.VK_RCONTROL);
-                KeyButton btnLMenu = FindButtonUseVK(VirtualKeys.VK_LMENU);
-                KeyButton btnRMenu = FindButtonUseVK(VirtualKeys.VK_RMENU);
-                KeyButton btnSpace = FindButtonUseVK(VirtualKeys.VK_SPACE);
+                KeyButton btnRWin = this.FindButtonUseVK(VirtualKeys.VK_RWIN);
+                KeyButton btnApps = this.FindButtonUseVK(VirtualKeys.VK_APPS);
+                KeyButton btnLCtrl = this.FindButtonUseVK(VirtualKeys.VK_LCONTROL);
+                KeyButton btnRCtrl = this.FindButtonUseVK(VirtualKeys.VK_RCONTROL);
+                KeyButton btnLMenu = this.FindButtonUseVK(VirtualKeys.VK_LMENU);
+                KeyButton btnRMenu = this.FindButtonUseVK(VirtualKeys.VK_RMENU);
+                KeyButton btnSpace = this.FindButtonUseVK(VirtualKeys.VK_SPACE);
 
                 // Move left alt key onto left win key's position.
                 btnLMenu.Location = new Point(btnLWin.Location.X, btnLWin.Location.Y);
@@ -251,7 +240,7 @@ namespace ScancodeMapping
                 btnSpace.Location = new Point(btnLMenu.Location.X + btnLMenu.Size.Width, btnSpace.Location.Y);
 
                 // Save right control key's curretnly used outer right location.
-                int helper = btnRCtrl.Location.X + btnRCtrl.Size.Width;
+                Int32 helper = btnRCtrl.Location.X + btnRCtrl.Size.Width;
 
                 // Resize right control key.
                 btnRCtrl.Size = new Size(btnLCtrl.Size.Width, btnLCtrl.Size.Height);
@@ -272,60 +261,56 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
         private void ShowWindowsKeys()
         {
-            KeyButton btnLWin = FindButtonUseVK(VirtualKeys.VK_LWIN);
+            KeyButton btnLWin = this.FindButtonUseVK(VirtualKeys.VK_LWIN);
+
             if (!btnLWin.Visible)
             {
                 btnLWin.RestoreDefaults(); // No need to run through the loop twice...
-                FindButtonUseVK(VirtualKeys.VK_RWIN).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_APPS).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_LCONTROL).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_RCONTROL).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_LMENU).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_RMENU).RestoreDefaults();
-                FindButtonUseVK(VirtualKeys.VK_SPACE).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_RWIN).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_APPS).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_LCONTROL).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_RCONTROL).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_LMENU).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_RMENU).RestoreDefaults();
+                this.FindButtonUseVK(VirtualKeys.VK_SPACE).RestoreDefaults();
             }
         }
 
-        //
-        // Summary:
-        //
         private void ShowGermany()
         {
             //
             // IMPORTANT: Read general comment in method ShowUSStandard()
             //
-            const int SC_BUTTON_1A = 0x1A;
-            const int SC_BUTTON_1B = 0x1B;
-            const int SC_BUTTON_2B = 0x2B;
+            const Int32 SC_BUTTON_1A = 0x1A;
+            const Int32 SC_BUTTON_1B = 0x1B;
+            const Int32 SC_BUTTON_2B = 0x2B;
 
-            KeyButton btnOEMx2B = FindButtonUseSC(SC_BUTTON_2B);
+            KeyButton btnOEMx2B = this.FindButtonUseSC(SC_BUTTON_2B);
+
             if (!btnOEMx2B.Location.Equals(btnOEMx2B.Defaults.Location))
             {
                 // Before starting with button movement 
                 // the keyboard needs to be re-arranged!
-                MapLayoutDependingKeys(TLayout.DE);
+                this.MapLayoutDependingKeys(TLayout.DE);
 
                 // Now begin with button movement.
-                KeyButton btnReturn = FindButtonUseVK(VirtualKeys.VK_RETURN);
+                KeyButton btnReturn = this.FindButtonUseVK(VirtualKeys.VK_RETURN);
 
                 btnOEMx2B.RestoreDefaults(); // No need to run through the loop twice...
-                FindButtonUseSC(SC_BUTTON_1A).RestoreDefaults();
-                FindButtonUseSC(SC_BUTTON_1B).RestoreDefaults();
+                this.FindButtonUseSC(SC_BUTTON_1A).RestoreDefaults();
+                this.FindButtonUseSC(SC_BUTTON_1B).RestoreDefaults();
                 btnReturn.RestoreDefaults(); // No need to run through the loop twice...
 
                 // As last step current button text has to be adapted!
                 Win32Wrapper.KeyText.Load(TKeyboardAlignment.Germany);
-                for (int index = 0; index < this.Controls.Count; index++)
+
+                for (Int32 index = 0; index < this.Controls.Count; index++)
                 {
                     // Ensure usage of keyboard buttons only.
-                    if (this.Controls[index] is KeyButton)
+                    if (this.Controls[index] is KeyButton button)
                     {
-                        KeyButton button = (KeyButton)this.Controls[index];
                         if (button.Defaults.Convert)
                         {
                             button.Text = Win32Wrapper.KeyText.GetKeyText(button.Keyscan);
@@ -337,15 +322,11 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
         private void ShowUSStandard()
         {
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             // Layout of used keybord alignments
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            //
             // Following keyboard layout alignments show the arrangement of such keyboards
             // and the scancodes used for every needed keyboard key. To move some buttons 
             // around it is impossible to use virtual keys because they are differently 
@@ -380,23 +361,24 @@ namespace ScancodeMapping
             //       4) Move and resize button VK_RETURN so that it fills the gap.
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-            const int SC_BUTTON_1A = 0x1A;
-            const int SC_BUTTON_1B = 0x1B;
-            const int SC_BUTTON_2B = 0x2B;
-            const int SC_BUTTON_28 = 0x28;
+            const Int32 SC_BUTTON_1A = 0x1A;
+            const Int32 SC_BUTTON_1B = 0x1B;
+            const Int32 SC_BUTTON_2B = 0x2B;
+            const Int32 SC_BUTTON_28 = 0x28;
 
-            KeyButton btnOEMx2B = FindButtonUseSC(SC_BUTTON_2B);
+            KeyButton btnOEMx2B = this.FindButtonUseSC(SC_BUTTON_2B);
+
             if (btnOEMx2B.Location.Equals(btnOEMx2B.Defaults.Location))
             {
                 // Before starting with button movement 
                 // the keyboard needs to be re-arranged!
-                MapLayoutDependingKeys(TLayout.US);
+                this.MapLayoutDependingKeys(TLayout.US);
 
                 // Now begin with button movement.
-                KeyButton btnOEMx1A = FindButtonUseSC(SC_BUTTON_1A);
-                KeyButton btnOEMx1B = FindButtonUseSC(SC_BUTTON_1B);
-                KeyButton btnReturn = FindButtonUseVK(VirtualKeys.VK_RETURN);
-                KeyButton btnOEMx28 = FindButtonUseSC(SC_BUTTON_28);
+                KeyButton btnOEMx1A = this.FindButtonUseSC(SC_BUTTON_1A);
+                KeyButton btnOEMx1B = this.FindButtonUseSC(SC_BUTTON_1B);
+                KeyButton btnReturn = this.FindButtonUseVK(VirtualKeys.VK_RETURN);
+                KeyButton btnOEMx28 = this.FindButtonUseSC(SC_BUTTON_28);
 
                 // Shrink button with scancode 0x1B to size of button with scancode 0x1A.
                 btnOEMx1B.Size = new Size(btnOEMx1A.Size.Width, btnOEMx1A.Size.Height);
@@ -405,7 +387,7 @@ namespace ScancodeMapping
                 btnOEMx2B.Location = new Point(btnOEMx1B.Location.X + btnOEMx1B.Size.Width, btnOEMx1B.Location.Y);
 
                 // Grow button with scancode 0x2B so that it fills the gap.
-                int helper = btnReturn.Location.X + btnReturn.Size.Width;
+                Int32 helper = btnReturn.Location.X + btnReturn.Size.Width;
                 btnOEMx2B.Size = new Size(helper - btnOEMx2B.Location.X, btnOEMx2B.Location.Y);
 
                 // Move and resize button VK_RETURN so that it fills the gap.
@@ -415,12 +397,12 @@ namespace ScancodeMapping
 
                 // As last step current button text has to be adapted!
                 Win32Wrapper.KeyText.Load(TKeyboardAlignment.USStandard);
-                for (int index = 0; index < this.Controls.Count; index++)
+
+                for (Int32 index = 0; index < this.Controls.Count; index++)
                 {
                     // Ensure usage of keyboard buttons only.
-                    if (this.Controls[index] is KeyButton)
+                    if (this.Controls[index] is KeyButton button)
                     {
-                        KeyButton button = (KeyButton)this.Controls[index];
                         if (button.Defaults.Convert)
                         {
                             button.Text = Win32Wrapper.KeyText.GetKeyText(button.Keyscan);
@@ -432,9 +414,6 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
         private void MapLayoutDependingKeys(TLayout layout)
         {
             // NOTE: Depending on physical keyboard layouts apportionment of the 
@@ -460,29 +439,29 @@ namespace ScancodeMapping
             //       remains on every single key but the virtual key must be 
             //       changed. This is this methods job.
 
-            int[][] layoutMap = new int[][]{
-                //         SC    DE                        US
-                new int[] {0x29, VirtualKeys.VK_OEM_5,     VirtualKeys.VK_OEM_3},
-                new int[] {0x0C, VirtualKeys.VK_OEM_4,     VirtualKeys.VK_OEM_MINUS},
-                new int[] {0x0D, VirtualKeys.VK_OEM_6,     VirtualKeys.VK_OEM_PLUS},
-                new int[] {0x15, VirtualKeys.VK_Z,         VirtualKeys.VK_Y},
-                new int[] {0x1A, VirtualKeys.VK_OEM_1,     VirtualKeys.VK_OEM_4},
-                new int[] {0x1B, VirtualKeys.VK_OEM_PLUS,  VirtualKeys.VK_OEM_6},
-                new int[] {0x27, VirtualKeys.VK_OEM_3,     VirtualKeys.VK_OEM_1},
-                new int[] {0x2B, VirtualKeys.VK_OEM_2,     VirtualKeys.VK_OEM_5},
-                new int[] {0x2C, VirtualKeys.VK_Y,         VirtualKeys.VK_Z},
-                new int[] {0x35, VirtualKeys.VK_OEM_MINUS, VirtualKeys.VK_OEM_2},
+            Int32[][] layoutMap = new Int32[][]
+            {   //           SC    DE                        US
+                new Int32[] {0x29, VirtualKeys.VK_OEM_5,     VirtualKeys.VK_OEM_3},
+                new Int32[] {0x0C, VirtualKeys.VK_OEM_4,     VirtualKeys.VK_OEM_MINUS},
+                new Int32[] {0x0D, VirtualKeys.VK_OEM_6,     VirtualKeys.VK_OEM_PLUS},
+                new Int32[] {0x15, VirtualKeys.VK_Z,         VirtualKeys.VK_Y},
+                new Int32[] {0x1A, VirtualKeys.VK_OEM_1,     VirtualKeys.VK_OEM_4},
+                new Int32[] {0x1B, VirtualKeys.VK_OEM_PLUS,  VirtualKeys.VK_OEM_6},
+                new Int32[] {0x27, VirtualKeys.VK_OEM_3,     VirtualKeys.VK_OEM_1},
+                new Int32[] {0x2B, VirtualKeys.VK_OEM_2,     VirtualKeys.VK_OEM_5},
+                new Int32[] {0x2C, VirtualKeys.VK_Y,         VirtualKeys.VK_Z},
+                new Int32[] {0x35, VirtualKeys.VK_OEM_MINUS, VirtualKeys.VK_OEM_2},
             };
 
-            for (int index = 0; index < layoutMap.Length; index++)
+            for (Int32 index = 0; index < layoutMap.Length; index++)
             {
                 if (layout == TLayout.DE)
                 {
-                    FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][1];
+                    this.FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][1];
                 }
                 else if (layout == TLayout.US)
                 {
-                    FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][2];
+                    this.FindButtonUseSC(layoutMap[index][0]).Keyscan.VKeyCode = layoutMap[index][2];
                 }
             }
         }

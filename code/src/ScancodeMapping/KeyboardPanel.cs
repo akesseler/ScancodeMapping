@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -30,16 +31,16 @@ namespace ScancodeMapping
     // The designer requires this class as the first part of this file!
     public partial class KeyboardPanel : UserControl
     {
-        private FunctionKeyPanel functionKeyPanel = null;
-        private StandardKeyPanel standardKeyPanel = null;
-        private ControlKeyPanel controlKeyPanel = null;
-        private NumericKeyPanel numericKeyPanel = null;
+        private readonly FunctionKeyPanel functionKeyPanel = null;
+        private readonly StandardKeyPanel standardKeyPanel = null;
+        private readonly ControlKeyPanel controlKeyPanel = null;
+        private readonly NumericKeyPanel numericKeyPanel = null;
 
         public KeyboardPanel(TKeyboardAlignment alignment)
         {
             Point offset = new Point(10, 10);
 
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.SuspendLayout();
 
@@ -53,13 +54,10 @@ namespace ScancodeMapping
             this.Controls.Add(this.controlKeyPanel);
             this.Controls.Add(this.numericKeyPanel);
 
-            // Use a border around this panel.
-            // this.BorderStyle = BorderStyle.FixedSingle;
-
             // Panel offset: 2x(X/Y) for the space around this panel plus 2pt for the border!
             this.Size = new Size(
-                2 * offset.X + 2 + functionKeyPanel.Size.Width + controlKeyPanel.Size.Width + numericKeyPanel.Size.Width,
-                2 * offset.Y + 2 + functionKeyPanel.Size.Height + standardKeyPanel.Size.Height
+                2 * offset.X + 2 + this.functionKeyPanel.Size.Width + this.controlKeyPanel.Size.Width + this.numericKeyPanel.Size.Width,
+                2 * offset.Y + 2 + this.functionKeyPanel.Size.Height + this.standardKeyPanel.Size.Height
             );
 
             this.functionKeyPanel.ResumeLayout(false);
@@ -69,51 +67,51 @@ namespace ScancodeMapping
             this.ResumeLayout(false);
 
             // Set LED's initial state.
-            NumLock(KeyStates.NumLock);
-            CapsLock(KeyStates.CapsLock);
-            ScrollLock(KeyStates.ScrollLock);
+            this.NumLock(KeyStates.NumLock);
+            this.CapsLock(KeyStates.CapsLock);
+            this.ScrollLock(KeyStates.ScrollLock);
         }
 
-        public void NumLock(bool ledOn)
+        public void NumLock(Boolean ledOn)
         {
-            numericKeyPanel.NumLock(ledOn);
+            this.numericKeyPanel.NumLock(ledOn);
         }
 
-        public void CapsLock(bool ledOn)
+        public void CapsLock(Boolean ledOn)
         {
-            numericKeyPanel.CapsLock(ledOn);
+            this.numericKeyPanel.CapsLock(ledOn);
         }
 
-        public void ScrollLock(bool ledOn)
+        public void ScrollLock(Boolean ledOn)
         {
-            numericKeyPanel.ScrollLock(ledOn);
+            this.numericKeyPanel.ScrollLock(ledOn);
         }
 
         public void KeyboardLayoutChanged(TKeyboardLayout layout)
         {
             if (layout == TKeyboardLayout.Standard)
             {
-                if (numericKeyPanel.Visible || controlKeyPanel.Visible)
+                if (this.numericKeyPanel.Visible || this.controlKeyPanel.Visible)
                 {
-                    numericKeyPanel.Visible = false;
-                    controlKeyPanel.Visible = false;
+                    this.numericKeyPanel.Visible = false;
+                    this.controlKeyPanel.Visible = false;
 
                     // Calculate new layout dimensions.
-                    int width = this.Size.Width - (numericKeyPanel.Size.Width + controlKeyPanel.Size.Width);
-                    int height = this.Size.Height; // Don't change the height!
+                    Int32 width = this.Size.Width - (this.numericKeyPanel.Size.Width + this.controlKeyPanel.Size.Width);
+                    Int32 height = this.Size.Height; // Don't change the height!
                     this.Size = new Size(width, height);
                 }
             }
             else if (layout == TKeyboardLayout.Enhanced)
             {
-                if (!numericKeyPanel.Visible || !controlKeyPanel.Visible)
+                if (!this.numericKeyPanel.Visible || !this.controlKeyPanel.Visible)
                 {
-                    numericKeyPanel.Visible = true;
-                    controlKeyPanel.Visible = true;
+                    this.numericKeyPanel.Visible = true;
+                    this.controlKeyPanel.Visible = true;
 
                     // Restore original layout dimensions.
-                    int width = this.Size.Width + (numericKeyPanel.Size.Width + controlKeyPanel.Size.Width);
-                    int height = this.Size.Height; // Don't change the height!
+                    Int32 width = this.Size.Width + (this.numericKeyPanel.Size.Width + this.controlKeyPanel.Size.Width);
+                    Int32 height = this.Size.Height; // Don't change the height!
                     this.Size = new Size(width, height);
                 }
             }
@@ -123,21 +121,21 @@ namespace ScancodeMapping
 
         public void KeyboardLayoutChanged(TKeyboardKeys keys)
         {
-            standardKeyPanel.SetKeys(keys);
+            this.standardKeyPanel.SetKeys(keys);
         }
 
         public void KeyboardLayoutChanged(TKeyboardAlignment alignment)
         {
-            standardKeyPanel.SetAlignment(alignment);
+            this.standardKeyPanel.SetAlignment(alignment);
         }
 
         public void UpdateMappings(ScancodeMap mappings)
         {
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
-                if (this.Controls[index] is KeyPanel)
+                if (this.Controls[index] is KeyPanel panel)
                 {
-                    ((KeyPanel)this.Controls[index]).UpdateMappings(mappings);
+                    panel.UpdateMappings(mappings);
                 }
             }
         }
@@ -146,27 +144,25 @@ namespace ScancodeMapping
         {
             if (mappings == null) { return; }
 
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
-                if (this.Controls[index] is KeyPanel)
+                if (this.Controls[index] is KeyPanel panel)
                 {
-                    ((KeyPanel)this.Controls[index]).CollectMappings(mappings);
+                    panel.CollectMappings(mappings);
                 }
             }
         }
 
-        public KeyButton FindButtonByScancode(int scancode, int extended)
+        public KeyButton FindButtonByScancode(Int32 scancode, Int32 extended)
         {
-            for (int outer = 0; outer < this.Controls.Count; outer++)
+            for (Int32 outer = 0; outer < this.Controls.Count; outer++)
             {
-                if (this.Controls[outer] is KeyPanel)
+                if (this.Controls[outer] is KeyPanel panel)
                 {
-                    KeyPanel panel = (KeyPanel)this.Controls[outer];
-                    for (int inner = 0; inner < panel.Controls.Count; inner++)
+                    for (Int32 inner = 0; inner < panel.Controls.Count; inner++)
                     {
-                        if (panel.Controls[inner] is KeyButton)
+                        if (panel.Controls[inner] is KeyButton button)
                         {
-                            KeyButton button = (KeyButton)panel.Controls[inner];
                             if (button.Keyscan.Scancode == scancode && button.Keyscan.Extended == extended)
                             {
                                 return button;
@@ -180,16 +176,14 @@ namespace ScancodeMapping
 
         public KeyButton GetSelectedButton()
         {
-            for (int outer = 0; outer < this.Controls.Count; outer++)
+            for (Int32 outer = 0; outer < this.Controls.Count; outer++)
             {
-                if (this.Controls[outer] is KeyPanel)
+                if (this.Controls[outer] is KeyPanel panel)
                 {
-                    KeyPanel panel = (KeyPanel)this.Controls[outer];
-                    for (int inner = 0; inner < panel.Controls.Count && panel.Visible; inner++)
+                    for (Int32 inner = 0; inner < panel.Controls.Count && panel.Visible; inner++)
                     {
-                        if (panel.Controls[inner] is KeyButton)
+                        if (panel.Controls[inner] is KeyButton button)
                         {
-                            KeyButton button = (KeyButton)panel.Controls[inner];
                             if (button.Focused)
                             {
                                 return button;

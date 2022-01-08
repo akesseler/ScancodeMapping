@@ -81,7 +81,7 @@ namespace ScancodeMapping
             this.closeButton.TabIndex = 0;
             this.closeButton.Text = "&Close";
             this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeButton.Click += new System.EventHandler(this.OnCloseButtonClick);
             // 
             // listPanel
             // 

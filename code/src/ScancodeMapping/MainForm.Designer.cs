@@ -129,30 +129,30 @@ namespace ScancodeMapping
             // standard101MenuItem
             // 
             this.standard101MenuItem.Name = "standard101MenuItem";
-            this.standard101MenuItem.Size = new System.Drawing.Size(232, 22);
+            this.standard101MenuItem.Size = new System.Drawing.Size(231, 22);
             this.standard101MenuItem.Text = "Standard Keyboard (101 keys)";
-            this.standard101MenuItem.Click += new System.EventHandler(this.standard101MenuItem_Click);
+            this.standard101MenuItem.Click += new System.EventHandler(this.OnStandard101MenuItemClick);
             // 
             // standard102MenuItem
             // 
             this.standard102MenuItem.Name = "standard102MenuItem";
-            this.standard102MenuItem.Size = new System.Drawing.Size(232, 22);
+            this.standard102MenuItem.Size = new System.Drawing.Size(231, 22);
             this.standard102MenuItem.Text = "Standard Keyboard (102 keys)";
-            this.standard102MenuItem.Click += new System.EventHandler(this.standard102MenuItem_Click);
+            this.standard102MenuItem.Click += new System.EventHandler(this.OnStandard102MenuItemClick);
             // 
             // winkey101MenuItem
             // 
             this.winkey101MenuItem.Name = "winkey101MenuItem";
-            this.winkey101MenuItem.Size = new System.Drawing.Size(232, 22);
+            this.winkey101MenuItem.Size = new System.Drawing.Size(231, 22);
             this.winkey101MenuItem.Text = "Windows Keyboard (101 keys)";
-            this.winkey101MenuItem.Click += new System.EventHandler(this.winkey101MenuItem_Click);
+            this.winkey101MenuItem.Click += new System.EventHandler(this.OnWinkey101MenuItemClick);
             // 
             // winkey102MenuItem
             // 
             this.winkey102MenuItem.Name = "winkey102MenuItem";
-            this.winkey102MenuItem.Size = new System.Drawing.Size(232, 22);
+            this.winkey102MenuItem.Size = new System.Drawing.Size(231, 22);
             this.winkey102MenuItem.Text = "Windows Keyboard (102 keys)";
-            this.winkey102MenuItem.Click += new System.EventHandler(this.winkey102MenuItem_Click);
+            this.winkey102MenuItem.Click += new System.EventHandler(this.OnWinkey102MenuItemClick);
             // 
             // layoutDropDown
             // 
@@ -171,16 +171,16 @@ namespace ScancodeMapping
             // standardMenuItem
             // 
             this.standardMenuItem.Name = "standardMenuItem";
-            this.standardMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.standardMenuItem.Size = new System.Drawing.Size(126, 22);
             this.standardMenuItem.Text = "Standard";
-            this.standardMenuItem.Click += new System.EventHandler(this.standardToolStripMenuItem_Click);
+            this.standardMenuItem.Click += new System.EventHandler(this.OnStandardToolStripMenuItemClick);
             // 
             // enhancedMenuItem
             // 
             this.enhancedMenuItem.Name = "enhancedMenuItem";
-            this.enhancedMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.enhancedMenuItem.Size = new System.Drawing.Size(126, 22);
             this.enhancedMenuItem.Text = "Enhanced";
-            this.enhancedMenuItem.Click += new System.EventHandler(this.enhancedToolStripMenuItem_Click);
+            this.enhancedMenuItem.Click += new System.EventHandler(this.OnEnhancedToolStripMenuItemClick);
             // 
             // alignmentDropDown
             // 
@@ -199,16 +199,16 @@ namespace ScancodeMapping
             // usstandardMenuItem
             // 
             this.usstandardMenuItem.Name = "usstandardMenuItem";
-            this.usstandardMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.usstandardMenuItem.Size = new System.Drawing.Size(140, 22);
             this.usstandardMenuItem.Text = "US-Standard";
-            this.usstandardMenuItem.Click += new System.EventHandler(this.usstandardMenuItem_Click);
+            this.usstandardMenuItem.Click += new System.EventHandler(this.OnUsStandardMenuItemClick);
             // 
             // germanyMenuItem
             // 
             this.germanyMenuItem.Name = "germanyMenuItem";
-            this.germanyMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.germanyMenuItem.Size = new System.Drawing.Size(140, 22);
             this.germanyMenuItem.Text = "Germany";
-            this.germanyMenuItem.Click += new System.EventHandler(this.germanyMenuItem_Click);
+            this.germanyMenuItem.Click += new System.EventHandler(this.OnGermanyMenuItemClick);
             // 
             // mainToolBar
             // 
@@ -243,7 +243,7 @@ namespace ScancodeMapping
             this.mainExitButton.Size = new System.Drawing.Size(36, 36);
             this.mainExitButton.Text = "Exit";
             this.mainExitButton.ToolTipText = "Exit Scancode Mapping program.";
-            this.mainExitButton.Click += new System.EventHandler(this.mainExitButton_Click);
+            this.mainExitButton.Click += new System.EventHandler(this.OnMainExitButtonClick);
             // 
             // toolStripSeparator1
             // 
@@ -259,7 +259,7 @@ namespace ScancodeMapping
             this.mainSaveMapping.Size = new System.Drawing.Size(36, 36);
             this.mainSaveMapping.Text = "Save";
             this.mainSaveMapping.ToolTipText = "Write current mappings into Windows Registry.";
-            this.mainSaveMapping.Click += new System.EventHandler(this.mainSaveMapping_Click);
+            this.mainSaveMapping.Click += new System.EventHandler(this.OnMainSaveMappingClick);
             // 
             // mainRemoveMapping
             // 
@@ -270,7 +270,7 @@ namespace ScancodeMapping
             this.mainRemoveMapping.Size = new System.Drawing.Size(36, 36);
             this.mainRemoveMapping.Text = "Remove";
             this.mainRemoveMapping.ToolTipText = "Remove all mappings from Windows Registry.";
-            this.mainRemoveMapping.Click += new System.EventHandler(this.mainRemoveMapping_Click);
+            this.mainRemoveMapping.Click += new System.EventHandler(this.OnMainRemoveMappingClick);
             // 
             // toolStripSeparator2
             // 
@@ -286,7 +286,7 @@ namespace ScancodeMapping
             this.mainShowMapping.Size = new System.Drawing.Size(36, 36);
             this.mainShowMapping.Text = "Show";
             this.mainShowMapping.ToolTipText = "Show current mappings as raw data.";
-            this.mainShowMapping.Click += new System.EventHandler(this.mainShowMapping_Click);
+            this.mainShowMapping.Click += new System.EventHandler(this.OnMainShowMappingClick);
             // 
             // mainExportMapping
             // 
@@ -297,7 +297,7 @@ namespace ScancodeMapping
             this.mainExportMapping.Size = new System.Drawing.Size(36, 36);
             this.mainExportMapping.Text = "Export";
             this.mainExportMapping.ToolTipText = "Export current mappings to a REG file.";
-            this.mainExportMapping.Click += new System.EventHandler(this.mainExportMapping_Click);
+            this.mainExportMapping.Click += new System.EventHandler(this.OnMainExportMappingClick);
             // 
             // toolStripSeparator3
             // 
@@ -313,7 +313,7 @@ namespace ScancodeMapping
             this.mainScanKeyboard.Size = new System.Drawing.Size(36, 36);
             this.mainScanKeyboard.Text = "Scan";
             this.mainScanKeyboard.ToolTipText = "Scan all keys of your keyboard and display some useful information.";
-            this.mainScanKeyboard.Click += new System.EventHandler(this.mainScanKeyboard_Click);
+            this.mainScanKeyboard.Click += new System.EventHandler(this.OnMainScanKeyboardClick);
             // 
             // mainKeyMapping
             // 
@@ -324,7 +324,7 @@ namespace ScancodeMapping
             this.mainKeyMapping.Size = new System.Drawing.Size(36, 36);
             this.mainKeyMapping.Text = "Mapping";
             this.mainKeyMapping.ToolTipText = "Change mapping for currently selected keyboard key.";
-            this.mainKeyMapping.Click += new System.EventHandler(this.mainKeyMapping_Click);
+            this.mainKeyMapping.Click += new System.EventHandler(this.OnMainKeyMappingClick);
             // 
             // MainForm
             // 
@@ -339,9 +339,10 @@ namespace ScancodeMapping
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Scancode Mapping 1.0";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnMainFormFormClosing);
+            this.Load += new System.EventHandler(this.OnMainFormLoad);
             this.mainStatusBar.ResumeLayout(false);
             this.mainStatusBar.PerformLayout();
             this.mainToolBar.ResumeLayout(false);
