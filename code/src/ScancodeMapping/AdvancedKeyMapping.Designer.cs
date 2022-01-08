@@ -84,7 +84,7 @@ namespace ScancodeMapping
             this.closeButton.TabIndex = 11;
             this.closeButton.Text = "&Close";
             this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeButton.Click += new System.EventHandler(this.OnCloseButtonClick);
             // 
             // startButton
             // 
@@ -95,7 +95,7 @@ namespace ScancodeMapping
             this.startButton.TabIndex = 10;
             this.startButton.Text = "&Start";
             this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            this.startButton.Click += new System.EventHandler(this.OnStartButtonClick);
             // 
             // firstKeyGroup
             // 
@@ -110,7 +110,7 @@ namespace ScancodeMapping
             this.firstKeyGroup.TabIndex = 0;
             this.firstKeyGroup.TabStop = false;
             this.firstKeyGroup.Text = "Press First Keyboard Key";
-            this.firstKeyGroup.EnabledChanged += new System.EventHandler(this.firstKeyGroup_EnabledChanged);
+            this.firstKeyGroup.EnabledChanged += new System.EventHandler(this.OnFirstKeyGroupEnabledChanged);
             // 
             // scancodeLabel1
             // 
@@ -155,7 +155,7 @@ namespace ScancodeMapping
             this.secondKeyGroup.TabIndex = 4;
             this.secondKeyGroup.TabStop = false;
             this.secondKeyGroup.Text = "Press Second Keyboard Key";
-            this.secondKeyGroup.EnabledChanged += new System.EventHandler(this.secondKeyGroup_EnabledChanged);
+            this.secondKeyGroup.EnabledChanged += new System.EventHandler(this.OnSecondKeyGroupEnabledChanged);
             // 
             // scancodeLabel2
             // 
@@ -268,7 +268,7 @@ namespace ScancodeMapping
             this.actionButton.TabIndex = 8;
             this.actionButton.Text = "???";
             this.actionButton.UseVisualStyleBackColor = true;
-            this.actionButton.Click += new System.EventHandler(this.actionButton_Click);
+            this.actionButton.Click += new System.EventHandler(this.OnActionButtonClick);
             // 
             // applyButton
             // 
@@ -279,7 +279,7 @@ namespace ScancodeMapping
             this.applyButton.TabIndex = 9;
             this.applyButton.Text = "&Apply";
             this.applyButton.UseVisualStyleBackColor = true;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+            this.applyButton.Click += new System.EventHandler(this.OnApplyButtonClick);
             // 
             // AdvancedKeyMapping
             // 
@@ -307,8 +307,8 @@ namespace ScancodeMapping
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Advanced Key Mapping";
-            this.Load += new System.EventHandler(this.AdvancedKeyMapping_Load);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdvancedKeyMapping_FormClosing);
+            this.Load += new System.EventHandler(this.OnAdvancedKeyMappingLoad);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnAdvancedKeyMappingFormClosing);
             this.firstKeyGroup.ResumeLayout(false);
             this.secondKeyGroup.ResumeLayout(false);
             this.ResumeLayout(false);

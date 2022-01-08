@@ -40,36 +40,36 @@ namespace ScancodeMapping
         private TKeyboardAlignment currentAlignment = TKeyboardAlignment.Default;
 
         // Scanning form settings
-        private bool scanningFiltered = true;
-        private bool scanningUnique = true;
-        private bool scanningKeyPress = true;
-        private bool scanningKeyRelease = false;
+        private Boolean scanningFiltered = true;
+        private Boolean scanningUnique = true;
+        private Boolean scanningKeyPress = true;
+        private Boolean scanningKeyRelease = false;
 
         // XML file node and attribute names
-        private const string xmlSettings = "settings";
-        private const string xmlKeyboard = "keyboard";
-        private const string xmlScanning = "scanning";
-        private const string xmlAlignment = "alignment";
-        private const string xmlLayout = "layout";
-        private const string xmlKeys = "keys";
-        private const string xmlFiltered = "filtered";
-        private const string xmlUnique = "unique";
-        private const string xmlKeyPress = "keypress";
-        private const string xmlKeyRelease = "keyrelease";
+        private const String xmlSettings = "settings";
+        private const String xmlKeyboard = "keyboard";
+        private const String xmlScanning = "scanning";
+        private const String xmlAlignment = "alignment";
+        private const String xmlLayout = "layout";
+        private const String xmlKeys = "keys";
+        private const String xmlFiltered = "filtered";
+        private const String xmlUnique = "unique";
+        private const String xmlKeyPress = "keypress";
+        private const String xmlKeyRelease = "keyrelease";
 
-        private const int aboutCommandID = 0x100;
+        private const Int32 aboutCommandId = 0x100;
 
-        private bool dirty = false;
-        private bool reboot = false;
+        private Boolean dirty = false;
+        private Boolean reboot = false;
 
-        private KeyboardPanel keyboardPanel;
+        private readonly KeyboardPanel keyboardPanel;
         private KeyButton selectedButton = null;
 
-        private ArrayList advancedMappings = new ArrayList();
+        private readonly ArrayList advancedMappings = new ArrayList();
 
         public MainForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.SuspendLayout();
 
@@ -77,18 +77,15 @@ namespace ScancodeMapping
 
             this.Controls.Add(this.keyboardPanel);
 
-            this.keyboardPanel.Location = new Point(0, mainToolBar.Size.Height);
+            this.keyboardPanel.Location = new Point(0, this.mainToolBar.Size.Height);
 
-            FitWindowLayout();
+            this.FitWindowLayout();
 
             this.ResumeLayout(false);
 
             // Don't do to much right here because the main form is not yet instantiated!
         }
 
-        //
-        // Propertires
-        //
         public TKeyboardLayout KeyboardLayout
         {
             get { return this.currentLayout; }
@@ -143,21 +140,17 @@ namespace ScancodeMapping
             }
         }
 
-        public bool Dirty
+        public Boolean Dirty
         {
             get { return this.dirty; }
             set { this.dirty = value; }
         }
 
-        public bool Reboot
+        public Boolean Reboot
         {
             get { return this.reboot; }
             set { this.reboot = value; }
         }
-
-        //
-        // Member functions
-        //
 
         public void StatusbarChanged(TKeyboardLayout layout)
         {
@@ -229,7 +222,7 @@ namespace ScancodeMapping
             this.SelectedButtonChanged(this.keyboardPanel.GetSelectedButton());
         }
 
-        public void StatusbarChanged(string text)
+        public void StatusbarChanged(String text)
         {
             this.generalStatusLabel.Text = text;
         }
@@ -254,7 +247,7 @@ namespace ScancodeMapping
                 this.keyboardPanel.Size.Width,
                 this.keyboardPanel.Size.Height + this.mainToolBar.Size.Height + this.mainStatusBar.Size.Height);
 
-            int width = this.ClientSize.Width
+            Int32 width = this.ClientSize.Width
                         - this.layoutDropDown.Width
                         - this.keysDropDown.Width
                         - this.alignmentDropDown.Width - 1;
@@ -262,7 +255,7 @@ namespace ScancodeMapping
             this.generalStatusLabel.Size = new Size(width, this.generalStatusLabel.Size.Height);
         }
 
-        public KeyButton FindButtonByScancode(int scnacode, int extended)
+        public KeyButton FindButtonByScancode(Int32 scnacode, Int32 extended)
         {
             return this.keyboardPanel.FindButtonByScancode(scnacode, extended);
         }
@@ -271,25 +264,24 @@ namespace ScancodeMapping
         {
             ArrayList result = new ArrayList();
 
-            for (int panels = 0; panels < this.keyboardPanel.Controls.Count; panels++)
+            for (Int32 panels = 0; panels < this.keyboardPanel.Controls.Count; panels++)
             {
-                if (this.keyboardPanel.Controls[panels] is KeyPanel)
+                if (this.keyboardPanel.Controls[panels] is KeyPanel panel)
                 {
-                    KeyPanel panel = (KeyPanel)this.keyboardPanel.Controls[panels];
-
-                    for (int buttons = 0; buttons < panel.Controls.Count; buttons++)
+                    for (Int32 buttons = 0; buttons < panel.Controls.Count; buttons++)
                     {
-                        if (panel.Controls[buttons] is KeyButton)
+                        if (panel.Controls[buttons] is KeyButton button)
                         {
-                            result.Add((KeyButton)panel.Controls[buttons]);
+                            result.Add(button);
                         }
                     }
                 }
             }
+
             return result;
         }
 
-        private void LoadSettings(string file)
+        private void LoadSettings(String file)
         {
             // Read XML file content.
             TextReader reader;
@@ -298,21 +290,22 @@ namespace ScancodeMapping
             XmlDocument document = new XmlDocument();
             document.Load(reader);
             reader.Close();
+            reader.Dispose();
 
             // Load 'settings' root tag and process contained entries.
             XmlNodeList settings = document.GetElementsByTagName(xmlSettings);
 
-            for (int outer = 0; outer < settings.Count; outer++)
+            for (Int32 outer = 0; outer < settings.Count; outer++)
             {
                 try
                 {
                     XmlNodeList nodes = settings.Item(outer).ChildNodes;
 
                     // Deserialize data depending on table type.
-                    for (int inner = 0; inner < nodes.Count; inner++)
+                    for (Int32 inner = 0; inner < nodes.Count; inner++)
                     {
                         XmlNode entry = nodes.Item(inner);
-                        string value;
+                        String value;
 
                         if (entry.Name.ToLower().Equals(xmlKeyboard) && entry.Attributes.Count > 0)
                         {
@@ -394,9 +387,7 @@ namespace ScancodeMapping
                         {
                             try
                             {
-                                this.scanningFiltered = Convert.ToBoolean(
-                                    entry.Attributes.GetNamedItem(xmlFiltered).Value
-                                );
+                                this.scanningFiltered = Convert.ToBoolean(entry.Attributes.GetNamedItem(xmlFiltered).Value);
                             }
                             catch (Exception)
                             {
@@ -405,9 +396,7 @@ namespace ScancodeMapping
 
                             try
                             {
-                                this.scanningUnique = Convert.ToBoolean(
-                                    entry.Attributes.GetNamedItem(xmlUnique).Value
-                                );
+                                this.scanningUnique = Convert.ToBoolean(entry.Attributes.GetNamedItem(xmlUnique).Value);
                             }
                             catch (Exception)
                             {
@@ -416,9 +405,7 @@ namespace ScancodeMapping
 
                             try
                             {
-                                this.scanningKeyPress = Convert.ToBoolean(
-                                    entry.Attributes.GetNamedItem(xmlKeyPress).Value
-                                );
+                                this.scanningKeyPress = Convert.ToBoolean(entry.Attributes.GetNamedItem(xmlKeyPress).Value);
                             }
                             catch (Exception)
                             {
@@ -427,9 +414,7 @@ namespace ScancodeMapping
 
                             try
                             {
-                                this.scanningKeyRelease = Convert.ToBoolean(
-                                    entry.Attributes.GetNamedItem(xmlKeyRelease).Value
-                                );
+                                this.scanningKeyRelease = Convert.ToBoolean(entry.Attributes.GetNamedItem(xmlKeyRelease).Value);
                             }
                             catch (Exception)
                             {
@@ -446,7 +431,7 @@ namespace ScancodeMapping
             }
         }
 
-        private void SaveSettings(string file)
+        private void SaveSettings(String file)
         {
             XmlDocument document = new XmlDocument();
             XmlElement root = document.CreateElement("ScancodeMapping");
@@ -473,6 +458,7 @@ namespace ScancodeMapping
             TextWriter writer = new StreamWriter(file);
             serializer.Serialize(writer, document);
             writer.Close();
+            writer.Dispose();
         }
 
         private void SaveMappings()
@@ -499,29 +485,51 @@ namespace ScancodeMapping
 
         private void RebootSystem()
         {
+            // Source of that code came from (no longer available) http://www.geekpedia.com/code36_Shut-down-system-using-Csharp.html
+            // Alternative source found on : https://stackoverflow.com/a/462409
+            // Description of all flags: https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32shutdown-method-in-class-win32-operatingsystem
 #if !DEBUG
-            // Source of that code came from http://www.geekpedia.com/code36_Shut-down-system-using-Csharp.html
-            ManagementBaseObject mboShutdown = null;
-            ManagementClass mcWin32 = new ManagementClass("Win32_OperatingSystem");
-            mcWin32.Get();
-            // You can't shutdown without security privileges
-            mcWin32.Scope.Options.EnablePrivileges = true;
-            ManagementBaseObject mboShutdownParams = mcWin32.GetMethodParameters("Win32Shutdown");
-            // Flag 6 means we want to forced reboot of the system!
-            mboShutdownParams["Flags"] = "6";
-            mboShutdownParams["Reserved"] = "0";
-            foreach (ManagementObject manObj in mcWin32.GetInstances())
+            try
             {
-                mboShutdown = manObj.InvokeMethod("Win32Shutdown", mboShutdownParams, null);
+                using (System.Management.ManagementClass mc = new System.Management.ManagementClass("Win32_OperatingSystem"))
+                {
+                    mc.Get();
+
+                    // You can't shutdown without security privileges
+                    mc.Scope.Options.EnablePrivileges = true;
+
+                    using (System.Management.ManagementBaseObject args = mc.GetMethodParameters("Win32Shutdown"))
+                    {
+                        // Flag 6 means we want to "forced reboot" of the system!
+                        args["Flags"] = "6";
+                        args["Reserved"] = "0";
+
+                        foreach (System.Management.ManagementObject mo in mc.GetInstances())
+                        {
+                            mo.InvokeMethod("Win32Shutdown", args, null);
+                        }
+                    }
+                }
             }
+            catch (Exception exception)
+            {
+                MessageBox.Show(this, 
+                    $"Trying to reboot the system has crashed unexpectedly!{Environment.NewLine}{Environment.NewLine}{exception.Message}",
+                    "System Reboot", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+#else
+            MessageBox.Show(this, "System reboot is disabled in debug mode!",
+                "System Reboot", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #endif
         }
 
-        private string MakeMappingInfo(AdvancedMapping entry)
+        private String MakeMappingInfo(AdvancedMapping entry)
         {
-            string result = "";
+            String result = String.Empty;
 
-            int helper = (entry.ExtendedKey1 << 8) | entry.ScancodeKey1;
+            Int32 helper = (entry.ExtendedKey1 << 8) | entry.ScancodeKey1;
+
             result += VirtualKeys.Name(entry.VirtualKey1) + " (0x" + helper.ToString("X4") + ")";
 
             if (entry.ScancodeKey2 == 0 && entry.ExtendedKey2 == 0)
@@ -531,59 +539,54 @@ namespace ScancodeMapping
             else
             {
                 helper = (entry.ExtendedKey2 << 8) | entry.ScancodeKey2;
+
                 result += " -> " + VirtualKeys.Name(entry.VirtualKey2) + " (0x" + helper.ToString("X4") + ")";
             }
 
             return result;
         }
 
-        //
-        // Status bar event handlers.
-        //
-        private void standard101MenuItem_Click(object sender, EventArgs e)
+        private void OnStandard101MenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardKeys = TKeyboardKeys.Keys101;
         }
 
-        private void standard102MenuItem_Click(object sender, EventArgs e)
+        private void OnStandard102MenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardKeys = TKeyboardKeys.Keys102;
         }
 
-        private void winkey102MenuItem_Click(object sender, EventArgs e)
+        private void OnWinkey102MenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardKeys = TKeyboardKeys.Keys106;
         }
 
-        private void winkey101MenuItem_Click(object sender, EventArgs e)
+        private void OnWinkey101MenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardKeys = TKeyboardKeys.Keys105;
         }
 
-        private void enhancedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnEnhancedToolStripMenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardLayout = TKeyboardLayout.Enhanced;
         }
 
-        private void standardToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnStandardToolStripMenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardLayout = TKeyboardLayout.Standard;
         }
 
-        private void germanyMenuItem_Click(object sender, EventArgs e)
+        private void OnGermanyMenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardAlignment = TKeyboardAlignment.Germany;
         }
 
-        private void usstandardMenuItem_Click(object sender, EventArgs e)
+        private void OnUsStandardMenuItemClick(Object sender, EventArgs args)
         {
             this.KeyboardAlignment = TKeyboardAlignment.USStandard;
         }
 
-        //
-        // Main form depending event handlers.
-        //
-        private void MainForm_Load(object sender, EventArgs e)
+        private void OnMainFormLoad(Object sender, EventArgs args)
         {
             Cursor oldCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
@@ -597,8 +600,8 @@ namespace ScancodeMapping
             // |     SubLanguage ID      |   Primary Language ID   |
             // +-------------------------+-------------------------+
             // 15                    10  9                         0 
-            // 
-            string layout = Win32Wrapper.GetKeyboardLayoutName();
+
+            String layout = Win32Wrapper.GetKeyboardLayoutName();
 
             // With US keyboard layout function GetKeyboardLayoutName() 
             // returns the string "00000409". This means primary language 
@@ -616,8 +619,9 @@ namespace ScancodeMapping
             // the keyboard panel was created. Otherwise the triggered 
             // property KeyboardAlignment will not be able to force a 
             // change of current/default layout.
-            //
-            string primaryLanguage = layout.Substring(4);
+
+            String primaryLanguage = layout.Substring(4);
+
             if (primaryLanguage == "0409")
             {
                 this.KeyboardAlignment = TKeyboardAlignment.USStandard;
@@ -632,18 +636,15 @@ namespace ScancodeMapping
             this.StatusbarChanged(this.currentKeys);
             this.StatusbarChanged(this.currentAlignment); // Not really needed because it's already done by setting the property (see above)
 
-            //
-            // Load settings...
-            //
-            LoadSettings(Path.ChangeExtension(Application.ExecutablePath, ".xml"));
+            this.LoadSettings(Path.ChangeExtension(Application.ExecutablePath, ".xml"));
 
             try
             {
                 // Put About Box to the system menu.
                 SystemMenu systemMenu = SystemMenu.GetSystemMenu(this);
-                int position = systemMenu.FindPositionByCommandID((int)SystemMenuCommand.SC_CLOSE);
+                Int32 position = systemMenu.FindPositionByCommandID((Int32)SystemMenuCommand.SC_CLOSE);
                 systemMenu.InsertSeparator(position);
-                systemMenu.InsertMenu(position, aboutCommandID, "About ...");
+                systemMenu.InsertMenu(position, MainForm.aboutCommandId, "About ...");
 
                 // Get current scancode map from Windows Registry
                 ScancodeMap mappings = ScancodeMap.RegistryLoad();
@@ -651,11 +652,11 @@ namespace ScancodeMapping
                 // Update mapping state on every key panel.
                 this.keyboardPanel.UpdateMappings(mappings);
 
-                int index = 0;
-                int oriScancode = 0;
-                int oriExtended = 0;
-                int mapScancode = 0;
-                int mapExtended = 0;
+                Int32 index = 0;
+                Int32 oriScancode = 0;
+                Int32 oriExtended = 0;
+                Int32 mapScancode = 0;
+                Int32 mapExtended = 0;
 
                 // Add every unknown keyboard key mapping to the advanced mappings list.
                 while (mappings.GetAt(index, out oriScancode, out oriExtended, out mapScancode, out mapExtended))
@@ -696,20 +697,17 @@ namespace ScancodeMapping
             this.Cursor = oldCursor;
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnMainFormFormClosing(Object sender, FormClosingEventArgs args)
         {
             this.Cursor = Cursors.WaitCursor;
 
-            SaveSettings(Path.ChangeExtension(Application.ExecutablePath, ".xml"));
+            this.SaveSettings(Path.ChangeExtension(Application.ExecutablePath, ".xml"));
 
             if (this.Dirty)
             {
-#if !DEBUG
-                DialogResult result = MessageBox.Show(
-                    this,
+                DialogResult result = MessageBox.Show(this,
                     "Would you like to store your scancode mapping changes into the Windows Registry and reboot the system afterwards?",
-                    "Save Changes",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question
+                    "Save Changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question
                 );
 
                 if (result == DialogResult.Yes)
@@ -717,41 +715,32 @@ namespace ScancodeMapping
                     this.SaveMappings();
                     this.RebootSystem();
                 }
-#endif
             }
             else if (this.Reboot)
             {
-#if !DEBUG
-                DialogResult result = MessageBox.Show(
-                    this,
+                DialogResult result = MessageBox.Show(this,
                     "Would you like to reboot your system to get your scancode mapping changes working?",
-                    "System Reboot",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question
+                    "System Reboot", MessageBoxButtons.YesNo, MessageBoxIcon.Question
                 );
 
                 if (result == DialogResult.Yes)
                 {
                     this.RebootSystem();
                 }
-#endif
             }
         }
 
-        //
-        // Menu bar event handlers.
-        //
-
-        private void mainExitButton_Click(object sender, EventArgs e)
+        private void OnMainExitButtonClick(Object sender, EventArgs args)
         {
             this.Close();
         }
 
-        private void mainSaveMapping_Click(object sender, EventArgs e)
+        private void OnMainSaveMappingClick(Object sender, EventArgs args)
         {
             this.SaveMappings();
         }
 
-        private void mainRemoveMapping_Click(object sender, EventArgs e)
+        private void OnMainRemoveMappingClick(Object sender, EventArgs args)
         {
             // Remove mappings from the registry.
             ScancodeMap.RegistryRemove();
@@ -766,7 +755,7 @@ namespace ScancodeMapping
             this.Reboot = true;
         }
 
-        private void mainShowMapping_Click(object sender, EventArgs e)
+        private void OnMainShowMappingClick(Object sender, EventArgs args)
         {
             ScancodeMap mappings = new ScancodeMap();
             this.keyboardPanel.CollectMappings(mappings);
@@ -777,9 +766,9 @@ namespace ScancodeMapping
                 mappings.Append(entry.ScancodeKey1, entry.ExtendedKey1, entry.ScancodeKey2, entry.ExtendedKey2);
             }
 
-            string[] rawData = mappings.GetRawDataList();
+            String[] rawData = mappings.GetRawDataList();
 
-            int index = 0;
+            Int32 index = 0;
             rawData[index++] += "\tVersion";
             rawData[index++] += "\tFlags";
             rawData[index++] += "\tElements";
@@ -787,17 +776,17 @@ namespace ScancodeMapping
             // Append assigned keys to the output.
             for (; index < rawData.Length - 1; index++)
             {
-                int mapScancode = Convert.ToInt32(rawData[index].Substring(0, 2), 16);
-                int mapExtended = Convert.ToInt32(rawData[index].Substring(3, 2), 16);
-                int oriScancode = Convert.ToInt32(rawData[index].Substring(6, 2), 16);
-                int oriExtended = Convert.ToInt32(rawData[index].Substring(9, 2), 16);
+                Int32 mapScancode = Convert.ToInt32(rawData[index].Substring(0, 2), 16);
+                Int32 mapExtended = Convert.ToInt32(rawData[index].Substring(3, 2), 16);
+                Int32 oriScancode = Convert.ToInt32(rawData[index].Substring(6, 2), 16);
+                Int32 oriExtended = Convert.ToInt32(rawData[index].Substring(9, 2), 16);
 
-                string helper = KeyButton.MakeMappingInfo(
-                    keyboardPanel.FindButtonByScancode(oriScancode, oriExtended),
-                    keyboardPanel.FindButtonByScancode(mapScancode, mapExtended)
+                String helper = KeyButton.MakeMappingInfo(
+                    this.keyboardPanel.FindButtonByScancode(oriScancode, oriExtended),
+                    this.keyboardPanel.FindButtonByScancode(mapScancode, mapExtended)
                 );
 
-                if (helper == "")
+                if (helper == String.Empty)
                 {
                     // Try to append advanced mappings to the output.
                     foreach (AdvancedMapping entry in this.advancedMappings)
@@ -819,13 +808,15 @@ namespace ScancodeMapping
             dlg.ShowDialog();
         }
 
-        private void mainExportMapping_Click(object sender, EventArgs e)
+        private void OnMainExportMappingClick(Object sender, EventArgs args)
         {
-            SaveFileDialog save = new SaveFileDialog();
-            save.Filter = "Windows Registry files (*.reg)|*.reg|All files (*.*)|*.*";
-            save.AutoUpgradeEnabled = true;
-            save.CheckFileExists = false;
-            save.RestoreDirectory = true;
+            SaveFileDialog save = new SaveFileDialog()
+            {
+                Filter = "Windows Registry files (*.reg)|*.reg|All files (*.*)|*.*",
+                AutoUpgradeEnabled = true,
+                CheckFileExists = false,
+                RestoreDirectory = true
+            };
 
             if (save.ShowDialog() == DialogResult.OK)
             {
@@ -848,17 +839,18 @@ namespace ScancodeMapping
             }
         }
 
-        private void mainScanKeyboard_Click(object sender, EventArgs e)
+        private void OnMainScanKeyboardClick(Object sender, EventArgs args)
         {
             Cursor oldCursor = this.Cursor;
             this.Cursor = Cursors.WaitCursor;
 
-            KeyboardScanning dlg = new KeyboardScanning();
-
-            dlg.Filtered = this.scanningFiltered;
-            dlg.Unique = this.scanningUnique;
-            dlg.Pressed = this.scanningKeyPress;
-            dlg.Released = this.scanningKeyRelease;
+            KeyboardScanning dlg = new KeyboardScanning()
+            {
+                Filtered = this.scanningFiltered,
+                Unique = this.scanningUnique,
+                Pressed = this.scanningKeyPress,
+                Released = this.scanningKeyRelease
+            };
 
             dlg.ShowDialog(this);
 
@@ -870,7 +862,7 @@ namespace ScancodeMapping
             this.Cursor = oldCursor;
         }
 
-        private void mainKeyMapping_Click(object sender, EventArgs e)
+        private void OnMainKeyMappingClick(Object sender, EventArgs args)
         {
             if (this.selectedButton == null)
             {
@@ -895,16 +887,13 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Overwritten windows message handler.
-        //
         protected override void WndProc(ref Message msg)
         {
-            if (msg.Msg == (int)WindowMessage.WM_SYSCOMMAND)
+            if (msg.Msg == (Int32)WindowMessage.WM_SYSCOMMAND)
             {
                 switch (msg.WParam.ToInt32())
                 {
-                    case aboutCommandID:
+                    case MainForm.aboutCommandId:
                         AboutBox dlg = new AboutBox();
                         dlg.ShowDialog(this);
                         break;

@@ -29,13 +29,13 @@ namespace ScancodeMapping
 {
     public partial class MappingRawData : Form
     {
-        public MappingRawData(string[] listData)
+        public MappingRawData(String[] listData)
         {
-            InitializeComponent();
-            rawDataListBox.Items.AddRange(listData);
+            this.InitializeComponent();
+            this.rawDataListBox.Items.AddRange(listData);
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
+        private void OnCloseButtonClick(Object sender, EventArgs args)
         {
             this.Close();
         }

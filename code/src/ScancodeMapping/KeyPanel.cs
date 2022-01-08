@@ -30,76 +30,45 @@ namespace ScancodeMapping
     // The designer requires this class as the first part of this file!
     public class KeyPanel : Panel
     {
-        private ToolTip buttonToolTip;
+        private readonly ToolTip buttonToolTip;
         protected KeyboardPanel parent = null;
 
-        //
-        // Summary:
-        //      Standard constructor.
-        //
         public KeyPanel(KeyboardPanel parent)
             : base()
         {
-            buttonToolTip = new ToolTip();
+            this.buttonToolTip = new ToolTip();
             this.parent = parent;
         }
 
-        //
-        // Properties
-        //
-
-        //
-        // Summary:
-        //      The panel tooltip used by panel's buttons.
-        //
         public ToolTip Tooltip
         {
             get { return this.buttonToolTip; }
         }
 
-        //
-        // Event handlers
-        //
-
-        //
-        // Summary:
-        //      General KeyUp event handler.
-        //
         public void HandleKeyUpEvent(KeyEventArgs evt)
         {
-            if (this.Parent is KeyboardPanel)
+            if (this.Parent is KeyboardPanel panel)
             {
                 switch (evt.KeyValue)
                 {
                     case VirtualKeys.VK_NUMLOCK:
-                        ((KeyboardPanel)this.Parent).NumLock(KeyStates.NumLock);
+                        panel.NumLock(KeyStates.NumLock);
                         break;
                     case VirtualKeys.VK_CAPITAL:
-                        ((KeyboardPanel)this.Parent).CapsLock(KeyStates.CapsLock);
+                        panel.CapsLock(KeyStates.CapsLock);
                         break;
                     case VirtualKeys.VK_SCROLL:
-                        ((KeyboardPanel)this.Parent).ScrollLock(KeyStates.ScrollLock);
+                        panel.ScrollLock(KeyStates.ScrollLock);
                         break;
                 }
             }
         }
 
-        //
-        // Member functions
-        //
-
-        //
-        // Summary:
-        //     Handles incoming virtual key, its scancode and its extended code.
-        //
-        // Returns:
-        //     True if value combination was handled and false if not.
-        //
-        public bool UpdateScancode(int vkeycode, int scancode, int extended)
+        public Boolean UpdateScancode(Int32 vkeycode, Int32 scancode, Int32 extended)
         {
             try
             {
-                KeyButton button = FindButtonUseVK(vkeycode);
+                KeyButton button = this.FindButtonUseVK(vkeycode);
 
                 button.Keyscan.Scancode = scancode;
                 button.Keyscan.Extended = extended;
@@ -120,26 +89,21 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
         public void UpdateMappings(ScancodeMap mappings)
         {
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
                 // Ensure usage of keyboard buttons only.
-                if (this.Controls[index] is KeyButton)
+                if (this.Controls[index] is KeyButton button)
                 {
-                    KeyButton button = (KeyButton)this.Controls[index];
-
-                    int oriScancode = button.Keyscan.Scancode;
-                    int oriExtended = button.Keyscan.Extended;
-                    int mapScancode = 0;
-                    int mapExtended = 0;
+                    Int32 oriScancode = button.Keyscan.Scancode;
+                    Int32 oriExtended = button.Keyscan.Extended;
+                    Int32 mapScancode = 0;
+                    Int32 mapExtended = 0;
 
                     if (mappings != null)
                     {
-                        int position = mappings.IndexOf(oriScancode, oriExtended, mapScancode, mapExtended);
+                        Int32 position = mappings.IndexOf(oriScancode, oriExtended, mapScancode, mapExtended);
 
                         if (position != -1)
                         {
@@ -163,27 +127,23 @@ namespace ScancodeMapping
             }
         }
 
-        // Summary:
-        //
         public void CollectMappings(ScancodeMap mappings)
         {
             if (mappings == null) { return; }
 
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
                 // Ensure usage of keyboard buttons only.
-                if (this.Controls[index] is KeyButton)
+                if (this.Controls[index] is KeyButton button)
                 {
-                    KeyButton button = (KeyButton)this.Controls[index];
-
                     if (!button.Keyscan.HasMapping) { continue; } // Go on with next button if this button has no mapping.
 
-                    int oriScancode = button.Keyscan.Scancode;
-                    int oriExtended = button.Keyscan.Extended;
-                    int mapScancode = button.Keyscan.MappedScancode;
-                    int mapExtended = button.Keyscan.MappedExtended;
+                    Int32 oriScancode = button.Keyscan.Scancode;
+                    Int32 oriExtended = button.Keyscan.Extended;
+                    Int32 mapScancode = button.Keyscan.MappedScancode;
+                    Int32 mapExtended = button.Keyscan.MappedExtended;
 
-                    int position = mappings.IndexOf(oriScancode, oriExtended, 0, 0);
+                    Int32 position = mappings.IndexOf(oriScancode, oriExtended, 0, 0);
 
                     if (position == -1)
                     {
@@ -197,10 +157,7 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
-        public KeyButton FindButtonByScancode(int scancode, int extended)
+        public KeyButton FindButtonByScancode(Int32 scancode, Int32 extended)
         {
             if (this.parent != null)
             {
@@ -212,20 +169,17 @@ namespace ScancodeMapping
             }
         }
 
-        //
-        // Summary:
-        //
-        protected KeyButton FindButtonUseVK(int vkeycode)
+        protected KeyButton FindButtonUseVK(Int32 vkeycode)
         {
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
                 // Ensure usage of keyboard buttons only.
-                if (this.Controls[index] is KeyButton)
+                if (this.Controls[index] is KeyButton button)
                 {
                     // Check curennt button's virtual key code.
-                    if (((KeyButton)this.Controls[index]).Keyscan.VKeyCode == vkeycode)
+                    if (button.Keyscan.VKeyCode == vkeycode)
                     {
-                        return (KeyButton)this.Controls[index];
+                        return button;
                     }
                 }
             }
@@ -233,20 +187,17 @@ namespace ScancodeMapping
             throw new ArgumentOutOfRangeException("Button for virtual key " + vkeycode + " not found");
         }
 
-        //
-        // Summary:
-        //
-        protected KeyButton FindButtonUseSC(int scancode)
+        protected KeyButton FindButtonUseSC(Int32 scancode)
         {
-            for (int index = 0; index < this.Controls.Count; index++)
+            for (Int32 index = 0; index < this.Controls.Count; index++)
             {
                 // Ensure usage of keyboard buttons only.
-                if (this.Controls[index] is KeyButton)
+                if (this.Controls[index] is KeyButton button)
                 {
                     // Check curennt button's scan code.
-                    if (((KeyButton)this.Controls[index]).Keyscan.Scancode == scancode)
+                    if (button.Keyscan.Scancode == scancode)
                     {
-                        return (KeyButton)this.Controls[index];
+                        return button;
                     }
                 }
             }

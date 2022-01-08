@@ -23,155 +23,96 @@
  */
 
 using System;
-using System.Runtime.InteropServices;   // DllImport()
+using System.Runtime.InteropServices;
 
 namespace ScancodeHook
 {
     namespace LowLevel
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public interface IKeyScanSink
         {
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="keyPad"></param>
-            /// <param name="vkeycode"></param>
-            /// <param name="scancode"></param>
-            /// <param name="flags"></param>
-            void HandleKeyScan(
-                int vkeycode,
-                int scancode,
-                int flags,
-                int time
-            );
+            void HandleKeyScan(Int32 vkeycode, Int32 scancode, Int32 flags, Int32 time);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public class Keyboard
         {
-            public const int STANDARD = 0x00;
-            public const int EXTENDED = 0xE0;
+            public const Int32 STANDARD = 0x00;
+            public const Int32 EXTENDED = 0xE0;
 
             // Declare hook instance member variable.
             private static Keyboard theInstance = null;
 
             //Declare some hook constants.
-            private const int WH_KEYBOARD_LL = 13;
-            private const int WM_KEYDOWN = 0x0100;
-            private const int WM_SYSKEYDOWN = 0x0104;
-            private const int WM_KEYUP = 0x0101;
-            private const int WM_SYSKEYUP = 0x0105;
+            private const Int32 WH_KEYBOARD_LL = 13;
+#pragma warning disable IDE0051 // Remove unused private members
+            private const Int32 WM_KEYDOWN = 0x0100;
+            private const Int32 WM_SYSKEYDOWN = 0x0104;
+            private const Int32 WM_KEYUP = 0x0101;
+            private const Int32 WM_SYSKEYUP = 0x0105;
+#pragma warning restore IDE0051 // Remove unused private members
 
             // Declare further member variables.
-            private int hookHandle = 0;
+            private Int32 hookHandle = 0;
             private HookProc hookProcedure = null;
             private IKeyScanSink scancodeSink = null;
-            private bool disableNextHook = false;
+            private Boolean disableNextHook = false;
 
-            /// <summary>
-            /// Define hook callback function layout.
-            /// </summary>
-            /// <param name="nCode"></param>
-            /// <param name="wParam"></param>
-            /// <param name="lParam"></param>
-            /// <returns></returns>
-            public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+            public delegate Int32 HookProc(Int32 nCode, IntPtr wParam, IntPtr lParam);
 
-            /// <summary>
-            /// This is the Import for the SetWindowsHookEx function.
-            /// Use this function to install a thread-specific hook.
-            /// </summary>
-            /// <param name="idHook"></param>
-            /// <param name="lpHookProc"></param>
-            /// <param name="hInstance"></param>
-            /// <param name="threadId"></param>
-            /// <returns></returns>
             [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-            public static extern int SetWindowsHookEx(int idHook, HookProc lpHookProc, IntPtr hInstance, int threadId);
+            public static extern Int32 SetWindowsHookEx(Int32 idHook, HookProc lpHookProc, IntPtr hInstance, Int32 threadId);
 
-            /// <summary>
-            /// This is the Import for the UnhookWindowsHookEx function.
-            /// Call this function to uninstall the hook.
-            /// </summary>
-            /// <param name="idHook"></param>
-            /// <returns></returns>
             [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-            public static extern bool UnhookWindowsHookEx(int idHook);
+            public static extern Boolean UnhookWindowsHookEx(Int32 idHook);
 
-            /// <summary>
-            /// This is the Import for the CallNextHookEx function.
-            /// Use this function to pass the hook information to the next hook procedure in chain.
-            /// </summary>
-            /// <param name="idHook"></param>
-            /// <param name="nCode"></param>
-            /// <param name="wParam"></param>
-            /// <param name="lParam"></param>
-            /// <returns></returns>
             [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-            public static extern int CallNextHookEx(int idHook, int nCode, IntPtr wParam, IntPtr lParam);
+            public static extern Int32 CallNextHookEx(Int32 idHook, Int32 nCode, IntPtr wParam, IntPtr lParam);
 
             //Declare a wrapper managed KBDLLHOOKSTRUCT class.
             [StructLayout(LayoutKind.Sequential)]
-            private class KBDLLHOOKSTRUCT
+            private struct KBDLLHOOKSTRUCT
             {
-                public int vkeycode;
-                public int scancode;
-                public int flags;
-                public int time;
+                public Int32 vkeycode;
+                public Int32 scancode;
+                public Int32 flags;
+                public Int32 time;
                 public IntPtr dwExtraInfo;
             }
 
-            /// <summary>
-            /// Singelton construction. 
-            /// </summary>
             private Keyboard()
             {
             }
 
-            /// <summary>
-            /// Singleton instance getter. 
-            /// </summary>
             public static Keyboard Instance
             {
                 get
                 {
-                    if (null == theInstance)
+                    if (null == Keyboard.theInstance)
                     {
-                        theInstance = new Keyboard();
+                        Keyboard.theInstance = new Keyboard();
                     }
-                    return theInstance;
+
+                    return Keyboard.theInstance;
                 }
             }
 
-            //
-            // Summary:
-            //
-            public static bool IsKeyUp(int flags)
+            public static Boolean IsKeyUp(Int32 flags)
             {
-                const int KF_UP = 0x8000; // Taken from file 'winuser.h'
+                const Int32 KF_UP = 0x8000; // Taken from file 'winuser.h'
 
                 if ((flags & (KF_UP >> 8)) == 0x80)
                 {
                     return true; // Key is released.
                 }
-
                 else
                 {
                     return false; // Key is pressed.
                 }
             }
 
-            //
-            // Summary:
-            //
-            public static bool IsExtended(int flags)
+            public static Boolean IsExtended(Int32 flags)
             {
-                const int KF_EXTENDED = 0x0100; // Taken from file 'winuser.h'
+                const Int32 KF_EXTENDED = 0x0100; // Taken from file 'winuser.h'
 
                 if ((flags & (KF_EXTENDED >> 8)) == 0x01)
                 {
@@ -183,12 +124,9 @@ namespace ScancodeHook
                 }
             }
 
-            //
-            // Summary:
-            //
-            public static bool IsSpecialLControl(int vkeycode, int scancode)
+            public static Boolean IsSpecialLControl(Int32 vkeycode, Int32 scancode)
             {
-                const int VK_LCONTROL = 0xA2;   // Taken from file 'winuser.h'
+                const Int32 VK_LCONTROL = 0xA2;   // Taken from file 'winuser.h'
 
                 // ATTENTION: Problem with scancode of VK_RMENU!
                 //            With right alt key (VK_RMENU) could be seen that beforehand 
@@ -213,47 +151,36 @@ namespace ScancodeHook
                 }
             }
 
-            //
-            // Summary:
-            //
-            public bool Hooked
+            public Boolean Hooked
             {
-                get { return (hookHandle != 0); }
+                get { return this.hookHandle != 0; }
             }
 
-            //
-            // Summary:
-            //
-            public void Hook(IKeyScanSink scancodeSink, bool disableNextHook)
+            public void Hook(IKeyScanSink scancodeSink, Boolean disableNextHook)
             {
                 this.disableNextHook = disableNextHook;
                 this.Hook(scancodeSink);
             }
 
-            /// <summary>
-            /// Hooks low-level keyboard input. 
-            /// </summary>
-            /// <param name="scancodeSink"></param>
-            /// <param name="keyPad"></param>
             public void Hook(IKeyScanSink scancodeSink)
             {
                 if (null != scancodeSink)
                 {
-                    if (hookHandle == 0)
+                    if (this.hookHandle == 0)
                     {
-                        hookProcedure = new HookProc(Keyboard.HookCallback);
+                        this.hookProcedure = new HookProc(Keyboard.HookCallback);
 
                         // REMARK: We need changes on the project setting to get this code running!
                         //         * Right click project in the solution explorer. 
                         //         * Go to properties and open Debug settings
                         //         * Uncheck "Enable visual studio hosting process"
-                        hookHandle = SetWindowsHookEx(
+                        this.hookHandle = Keyboard.SetWindowsHookEx(
                             WH_KEYBOARD_LL,
-                            hookProcedure,
+                            this.hookProcedure,
                             Marshal.GetHINSTANCE(System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]),
                             0);
 
-                        if (0 != hookHandle)
+                        if (0 != this.hookHandle)
                         {
                             // Save given scancode sink and key pad to be used.
                             this.scancodeSink = scancodeSink;
@@ -274,16 +201,13 @@ namespace ScancodeHook
                 }
             }
 
-            /// <summary>
-            /// Unhook low-level keyboard input. 
-            /// </summary>
             public void Unhook()
             {
-                if (hookHandle != 0)
+                if (this.hookHandle != 0)
                 {
-                    if (UnhookWindowsHookEx(hookHandle))
+                    if (Keyboard.UnhookWindowsHookEx(this.hookHandle))
                     {
-                        hookHandle = 0;
+                        this.hookHandle = 0;
                     }
                     else
                     {
@@ -292,25 +216,18 @@ namespace ScancodeHook
                 }
             }
 
-            /// <summary>
-            /// Hook callback implementation. 
-            /// </summary>
-            /// <param name="nCode"></param>
-            /// <param name="wParam"></param>
-            /// <param name="lParam"></param>
-            /// <returns></returns>
-            private static int HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+            private static Int32 HookCallback(Int32 nCode, IntPtr wParam, IntPtr lParam)
             {
                 // REMARK: Do not distinguish between key press and key release!
 
                 // Call scancode sink to publish current scancode.
-                if (null != theInstance.scancodeSink)
+                if (null != Keyboard.theInstance.scancodeSink)
                 {
                     //Marshall data from wParam.
                     KBDLLHOOKSTRUCT llHook = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
 
                     // Update scancode mapper sink.
-                    theInstance.scancodeSink.HandleKeyScan(
+                    Keyboard.theInstance.scancodeSink.HandleKeyScan(
                         llHook.vkeycode,
                         llHook.scancode,
                         llHook.flags,
@@ -323,17 +240,17 @@ namespace ScancodeHook
                         llHook.vkeycode == ScancodeMapping.VirtualKeys.VK_SCROLL)
                     {
                         // Call next hook in the chain if it's call isn't suppressed.
-                        return CallNextHookEx(theInstance.hookHandle, nCode, wParam, lParam);
+                        return Keyboard.CallNextHookEx(Keyboard.theInstance.hookHandle, nCode, wParam, lParam);
                     }
 
-                    if (theInstance.disableNextHook)
+                    if (Keyboard.theInstance.disableNextHook)
                     {
                         return 1;   // Suppress call to next hook in the chain.
                     }
                 }
 
                 // Call next hook in the chain if it's call isn't suppressed.
-                return CallNextHookEx(theInstance.hookHandle, nCode, wParam, lParam);
+                return Keyboard.CallNextHookEx(Keyboard.theInstance.hookHandle, nCode, wParam, lParam);
             }
         }
     }

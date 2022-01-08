@@ -73,7 +73,7 @@ namespace ScancodeMapping
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "&Close";
             this.closeButton.UseVisualStyleBackColor = true;
-            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            this.closeButton.Click += new System.EventHandler(this.OnCloseButtonClick);
             // 
             // applyButton
             // 
@@ -84,7 +84,7 @@ namespace ScancodeMapping
             this.applyButton.TabIndex = 2;
             this.applyButton.Text = "&Apply";
             this.applyButton.UseVisualStyleBackColor = true;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+            this.applyButton.Click += new System.EventHandler(this.OnApplyButtonClick);
             // 
             // advancedButton
             // 
@@ -95,7 +95,7 @@ namespace ScancodeMapping
             this.advancedButton.TabIndex = 1;
             this.advancedButton.Text = "A&dvanced";
             this.advancedButton.UseVisualStyleBackColor = true;
-            this.advancedButton.Click += new System.EventHandler(this.advancedButton_Click);
+            this.advancedButton.Click += new System.EventHandler(this.OnAdvancedButtonClick);
             // 
             // keyMappingGroup
             // 
@@ -130,7 +130,7 @@ namespace ScancodeMapping
             this.remapRadioButton.TabIndex = 2;
             this.remapRadioButton.Text = "&Map Key to";
             this.remapRadioButton.UseVisualStyleBackColor = true;
-            this.remapRadioButton.CheckedChanged += new System.EventHandler(this.remapRadioButton_CheckedChanged);
+            this.remapRadioButton.CheckedChanged += new System.EventHandler(this.OnRemapRadioButtonCheckedChanged);
             // 
             // restoreRadioButton
             // 
@@ -141,7 +141,7 @@ namespace ScancodeMapping
             this.restoreRadioButton.TabIndex = 1;
             this.restoreRadioButton.Text = "&Restore Key";
             this.restoreRadioButton.UseVisualStyleBackColor = true;
-            this.restoreRadioButton.CheckedChanged += new System.EventHandler(this.restoreRadioButton_CheckedChanged);
+            this.restoreRadioButton.CheckedChanged += new System.EventHandler(this.OnRestoreRadioButtonCheckedChanged);
             // 
             // disableRadioButton
             // 
@@ -154,7 +154,7 @@ namespace ScancodeMapping
             this.disableRadioButton.TabStop = true;
             this.disableRadioButton.Text = "&Disable Key";
             this.disableRadioButton.UseVisualStyleBackColor = true;
-            this.disableRadioButton.CheckedChanged += new System.EventHandler(this.disableRadioButton_CheckedChanged);
+            this.disableRadioButton.CheckedChanged += new System.EventHandler(this.OnDisableRadioButtonCheckedChanged);
             // 
             // KeyMapping
             // 
@@ -174,7 +174,7 @@ namespace ScancodeMapping
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Key Mapping";
-            this.Load += new System.EventHandler(this.KeyMapping_Load);
+            this.Load += new System.EventHandler(this.OnKeyMappingLoad);
             this.keyMappingGroup.ResumeLayout(false);
             this.keyMappingGroup.PerformLayout();
             this.ResumeLayout(false);

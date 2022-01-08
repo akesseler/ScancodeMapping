@@ -174,7 +174,7 @@ namespace ScancodeMapping
             this.btnAction.TabIndex = 6;
             this.btnAction.Text = "Start";
             this.btnAction.UseVisualStyleBackColor = true;
-            this.btnAction.Click += new System.EventHandler(this.btnAction_Click);
+            this.btnAction.Click += new System.EventHandler(this.OnButtonActionClick);
             // 
             // btnClose
             // 
@@ -185,7 +185,7 @@ namespace ScancodeMapping
             this.btnClose.TabIndex = 7;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.btnClose.Click += new System.EventHandler(this.OnButtonCloseClick);
             // 
             // topPanel
             // 
@@ -311,21 +311,21 @@ namespace ScancodeMapping
             this.exportMenuItem});
             this.lvContextMenu.Name = "lvContextMenu";
             this.lvContextMenu.Size = new System.Drawing.Size(125, 76);
-            this.lvContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.lvContextMenu_Opening);
+            this.lvContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.OnListViewContextMenuOpening);
             // 
             // emptyMenuItem
             // 
             this.emptyMenuItem.Name = "emptyMenuItem";
             this.emptyMenuItem.Size = new System.Drawing.Size(124, 22);
             this.emptyMenuItem.Text = "Empty";
-            this.emptyMenuItem.Click += new System.EventHandler(this.emptyMenuItem_Click);
+            this.emptyMenuItem.Click += new System.EventHandler(this.OnEmptyMenuItemClick);
             // 
             // removeMenuItem
             // 
             this.removeMenuItem.Name = "removeMenuItem";
             this.removeMenuItem.Size = new System.Drawing.Size(124, 22);
             this.removeMenuItem.Text = "Remove";
-            this.removeMenuItem.Click += new System.EventHandler(this.removeMenuItem_Click);
+            this.removeMenuItem.Click += new System.EventHandler(this.OnRemoveMenuItemClick);
             // 
             // separatorMenuItem1
             // 
@@ -337,7 +337,7 @@ namespace ScancodeMapping
             this.exportMenuItem.Name = "exportMenuItem";
             this.exportMenuItem.Size = new System.Drawing.Size(124, 22);
             this.exportMenuItem.Text = "Export";
-            this.exportMenuItem.Click += new System.EventHandler(this.exportMenuItem_Click);
+            this.exportMenuItem.Click += new System.EventHandler(this.OnExportMenuItemClick);
             // 
             // KeyboardScanning
             // 
@@ -357,7 +357,7 @@ namespace ScancodeMapping
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Keyboard Scanning";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.KeyboardScanning_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnKeyboardScanningFormClosing);
             this.bottomPanel.ResumeLayout(false);
             this.topPanel.ResumeLayout(false);
             this.fillPanel.ResumeLayout(false);

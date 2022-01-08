@@ -32,26 +32,26 @@ namespace ScancodeMapping
 {
     public partial class AdvancedKeyMapping : Form, IKeyScanSink
     {
-        private const string ACTION_DISABLE = "Disable";
-        private const string ACTION_RESTORE = "Restore";
+        private const String ACTION_DISABLE = "Disable";
+        private const String ACTION_RESTORE = "Restore";
 
-        private int virtualKey1 = 0;
-        private int scancodeKey1 = 0;
-        private int extendedKey1 = 0;
-        private int virtualKey2 = 0;
-        private int scancodeKey2 = 0;
-        private int extendedKey2 = 0;
+        private Int32 virtualKey1 = 0;
+        private Int32 scancodeKey1 = 0;
+        private Int32 extendedKey1 = 0;
+        private Int32 virtualKey2 = 0;
+        private Int32 scancodeKey2 = 0;
+        private Int32 extendedKey2 = 0;
 
-        private ArrayList pendingList = null;
+        private readonly ArrayList pendingList = null;
 
         public AdvancedKeyMapping(ArrayList pendingList)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.pendingList = pendingList;
         }
 
-        public void HandleKeyScan(int vkeycode, int scancode, int flags, int time)
+        public void HandleKeyScan(Int32 vkeycode, Int32 scancode, Int32 flags, Int32 time)
         {
             // REMARK: Read comments in function IsSpecialLControl()!
             if (Keyboard.IsSpecialLControl(vkeycode, scancode))
@@ -66,19 +66,19 @@ namespace ScancodeMapping
             }
 
             // Only extended keys using additional information!
-            int extended = (Keyboard.IsExtended(flags) ? Keyboard.EXTENDED : Keyboard.STANDARD);
+            Int32 extended = (Keyboard.IsExtended(flags) ? Keyboard.EXTENDED : Keyboard.STANDARD);
 
             if (!this.secondKeyGroup.Enabled)
             {
-                FirstGroupKeyMapping(vkeycode, scancode, extended);
+                this.FirstGroupKeyMapping(vkeycode, scancode, extended);
             }
             else
             {
-                SecondGroupKeyMapping(vkeycode, scancode, extended);
+                this.SecondGroupKeyMapping(vkeycode, scancode, extended);
             }
         }
 
-        private void FirstGroupKeyMapping(int vkeycode, int scancode, int extended)
+        private void FirstGroupKeyMapping(Int32 vkeycode, Int32 scancode, Int32 extended)
         {
             this.keyNameText1.Text = VirtualKeys.Name(vkeycode);
             this.virtualKeyText1.Text = "0x" + vkeycode.ToString("X4");
@@ -131,7 +131,7 @@ namespace ScancodeMapping
             }
             else
             {
-                if (-1 != pendingList.IndexOf(new AdvancedMapping(this.virtualKey1, this.scancodeKey1, this.extendedKey1)))
+                if (-1 != this.pendingList.IndexOf(new AdvancedMapping(this.virtualKey1, this.scancodeKey1, this.extendedKey1)))
                 {
                     this.actionButton.Text = ACTION_RESTORE;
                     this.actionButton.Tag = KeyButton.RestoreButton;
@@ -150,11 +150,11 @@ namespace ScancodeMapping
             this.secondKeyGroup.Enabled = true;
         }
 
-        private void SecondGroupKeyMapping(int vkeycode, int scancode, int extended)
+        private void SecondGroupKeyMapping(Int32 vkeycode, Int32 scancode, Int32 extended)
         {
-            string keyName = VirtualKeys.Name(vkeycode);
-            string vkCode = "0x" + vkeycode.ToString("X4");
-            string scanCode = "0x" + extended.ToString("X2") + scancode.ToString("X2");
+            String keyName = VirtualKeys.Name(vkeycode);
+            String vkCode = "0x" + vkeycode.ToString("X4");
+            String scanCode = "0x" + extended.ToString("X2") + scancode.ToString("X2");
 
             // Avoid mapping to same key.
             if (scanCode == this.scancodeText1.Text)
@@ -196,11 +196,11 @@ namespace ScancodeMapping
             this.extendedKey2 = extended;
         }
 
-        private void UpdatePendingList(int virtualKey1, int scancodeKey1, int extendedKey1, int virtualKey2, int scancodeKey2, int extendedKey2)
+        private void UpdatePendingList(Int32 virtualKey1, Int32 scancodeKey1, Int32 extendedKey1, Int32 virtualKey2, Int32 scancodeKey2, Int32 extendedKey2)
         {
             AdvancedMapping entry = new AdvancedMapping(virtualKey1, scancodeKey1, extendedKey1);
 
-            int index = pendingList.IndexOf(entry);
+            Int32 index = this.pendingList.IndexOf(entry);
 
             if (index == -1) // Add entry to list.
             {
@@ -209,35 +209,35 @@ namespace ScancodeMapping
                 entry.ScancodeKey2 = scancodeKey2;
                 entry.ExtendedKey2 = extendedKey2;
 
-                pendingList.Add(entry);
+                this.pendingList.Add(entry);
             }
             else // Update found entry.
             {
-                ((AdvancedMapping)pendingList[index]).VirtualKey1 = virtualKey1;
-                ((AdvancedMapping)pendingList[index]).VirtualKey2 = virtualKey2;
-                ((AdvancedMapping)pendingList[index]).ScancodeKey2 = scancodeKey2;
-                ((AdvancedMapping)pendingList[index]).ExtendedKey2 = extendedKey2;
+                ((AdvancedMapping)this.pendingList[index]).VirtualKey1 = virtualKey1;
+                ((AdvancedMapping)this.pendingList[index]).VirtualKey2 = virtualKey2;
+                ((AdvancedMapping)this.pendingList[index]).ScancodeKey2 = scancodeKey2;
+                ((AdvancedMapping)this.pendingList[index]).ExtendedKey2 = extendedKey2;
             }
 
             // Set application dirty because of changes on keyboard key mapping.
             App.GetMainForm().Dirty = true;
         }
 
-        private void UpdatePendingList(int virtualKey1, int scancodeKey1, int extendedKey1, KeyButton button)
+        private void UpdatePendingList(Int32 virtualKey1, Int32 scancodeKey1, Int32 extendedKey1, KeyButton button)
         {
             if (button != null)
             {
                 if (button.Equals(KeyButton.DisabledButton))
                 {
-                    pendingList.Add(new AdvancedMapping(virtualKey1, scancodeKey1, extendedKey1));
+                    this.pendingList.Add(new AdvancedMapping(virtualKey1, scancodeKey1, extendedKey1));
                 }
                 else if (button.Equals(KeyButton.RestoreButton))
                 {
-                    int index = pendingList.IndexOf(new AdvancedMapping(virtualKey1, scancodeKey1, extendedKey1));
+                    Int32 index = this.pendingList.IndexOf(new AdvancedMapping(virtualKey1, scancodeKey1, extendedKey1));
 
                     if (index != -1)
                     {
-                        pendingList.RemoveAt(index);
+                        this.pendingList.RemoveAt(index);
                     }
                 }
 
@@ -268,21 +268,21 @@ namespace ScancodeMapping
             this.applyButton.Enabled = false;
         }
 
-        private void startButton_Click(object sender, EventArgs e)
+        private void OnStartButtonClick(Object sender, EventArgs args)
         {
             this.scancodeKey1 = 0;
             this.extendedKey1 = 0;
 
-            this.keyNameText1.Text = "";
-            this.virtualKeyText1.Text = "";
-            this.scancodeText1.Text = "";
+            this.keyNameText1.Text = String.Empty;
+            this.virtualKeyText1.Text = String.Empty;
+            this.scancodeText1.Text = String.Empty;
 
             this.scancodeKey2 = 0;
             this.extendedKey2 = 0;
 
-            this.keyNameText2.Text = "";
-            this.virtualKeyText2.Text = "";
-            this.scancodeText2.Text = "";
+            this.keyNameText2.Text = String.Empty;
+            this.virtualKeyText2.Text = String.Empty;
+            this.scancodeText2.Text = String.Empty;
 
             this.firstKeyGroup.Enabled = true;
             this.startButton.Enabled = false;
@@ -293,7 +293,7 @@ namespace ScancodeMapping
             Keyboard.Instance.Hook(this, true);
         }
 
-        private void actionButton_Click(object sender, EventArgs e)
+        private void OnActionButtonClick(Object sender, EventArgs args)
         {
             KeyButton button = App.GetMainForm().FindButtonByScancode(this.scancodeKey1, this.extendedKey1);
 
@@ -316,10 +316,10 @@ namespace ScancodeMapping
             this.ResetLayout();
         }
 
-        private void applyButton_Click(object sender, EventArgs e)
+        private void OnApplyButtonClick(Object sender, EventArgs args)
         {
-            KeyButton button1 = App.GetMainForm().FindButtonByScancode(scancodeKey1, extendedKey1);
-            KeyButton button2 = App.GetMainForm().FindButtonByScancode(scancodeKey2, extendedKey2);
+            KeyButton button1 = App.GetMainForm().FindButtonByScancode(this.scancodeKey1, this.extendedKey1);
+            KeyButton button2 = App.GetMainForm().FindButtonByScancode(this.scancodeKey2, this.extendedKey2);
 
             if (button1 != null && button2 != null)
             {
@@ -359,12 +359,12 @@ namespace ScancodeMapping
             this.applyButton.Enabled = false;
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
+        private void OnCloseButtonClick(Object sender, EventArgs args)
         {
             this.Close();
         }
 
-        private void firstKeyGroup_EnabledChanged(object sender, EventArgs e)
+        private void OnFirstKeyGroupEnabledChanged(Object sender, EventArgs args)
         {
             if (this.firstKeyGroup.Enabled)
             {
@@ -380,7 +380,7 @@ namespace ScancodeMapping
             }
         }
 
-        private void secondKeyGroup_EnabledChanged(object sender, EventArgs e)
+        private void OnSecondKeyGroupEnabledChanged(Object sender, EventArgs args)
         {
             if (this.secondKeyGroup.Enabled)
             {
@@ -396,7 +396,7 @@ namespace ScancodeMapping
             }
         }
 
-        private void AdvancedKeyMapping_Load(object sender, EventArgs e)
+        private void OnAdvancedKeyMappingLoad(Object sender, EventArgs args)
         {
             this.firstKeyGroup.Enabled = false;
             this.secondKeyGroup.Enabled = false;
@@ -406,7 +406,7 @@ namespace ScancodeMapping
             this.actionButton.Tag = null;
         }
 
-        private void AdvancedKeyMapping_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnAdvancedKeyMappingFormClosing(Object sender, FormClosingEventArgs args)
         {
             Keyboard.Instance.Unhook(); // Ensure unhooking!
         }
@@ -414,12 +414,12 @@ namespace ScancodeMapping
 
     public class AdvancedMapping
     {
-        private int virtualKey1 = 0;
-        private int scancodeKey1 = 0;
-        private int extendedKey1 = 0;
-        private int virtualKey2 = 0;
-        private int scancodeKey2 = 0;
-        private int extendedKey2 = 0;
+        private Int32 virtualKey1 = 0;
+        private Int32 scancodeKey1 = 0;
+        private Int32 extendedKey1 = 0;
+        private Int32 virtualKey2 = 0;
+        private Int32 scancodeKey2 = 0;
+        private Int32 extendedKey2 = 0;
 
         public AdvancedMapping()
         {
@@ -431,7 +431,7 @@ namespace ScancodeMapping
             this.extendedKey2 = 0;
         }
 
-        public AdvancedMapping(int virtualKey1, int scancodeKey1, int extendedKey1)
+        public AdvancedMapping(Int32 virtualKey1, Int32 scancodeKey1, Int32 extendedKey1)
             : this()
         {
             this.virtualKey1 = virtualKey1;
@@ -439,7 +439,7 @@ namespace ScancodeMapping
             this.extendedKey1 = extendedKey1;
         }
 
-        public AdvancedMapping(int virtualKey1, int scancodeKey1, int extendedKey1, int virtualKey2, int scancodeKey2, int extendedKey2)
+        public AdvancedMapping(Int32 virtualKey1, Int32 scancodeKey1, Int32 extendedKey1, Int32 virtualKey2, Int32 scancodeKey2, Int32 extendedKey2)
             : this(virtualKey1, scancodeKey1, extendedKey1)
         {
             this.virtualKey2 = virtualKey2;
@@ -447,51 +447,51 @@ namespace ScancodeMapping
             this.extendedKey2 = extendedKey2;
         }
 
-        public int VirtualKey1
+        public Int32 VirtualKey1
         {
             get { return this.virtualKey1; }
             set { this.virtualKey1 = value; }
         }
 
-        public int ScancodeKey1
+        public Int32 ScancodeKey1
         {
             get { return this.scancodeKey1; }
             set { this.scancodeKey1 = value; }
         }
 
-        public int ExtendedKey1
+        public Int32 ExtendedKey1
         {
             get { return this.extendedKey1; }
             set { this.extendedKey1 = value; }
         }
 
-        public int VirtualKey2
+        public Int32 VirtualKey2
         {
             get { return this.virtualKey2; }
             set { this.virtualKey2 = value; }
         }
 
-        public int ScancodeKey2
+        public Int32 ScancodeKey2
         {
             get { return this.scancodeKey2; }
             set { this.scancodeKey2 = value; }
         }
 
-        public int ExtendedKey2
+        public Int32 ExtendedKey2
         {
             get { return this.extendedKey2; }
             set { this.extendedKey2 = value; }
         }
 
-        public static bool operator ==(AdvancedMapping entry1, AdvancedMapping entry2)
+        public static Boolean operator ==(AdvancedMapping entry1, AdvancedMapping entry2)
         {
-            if (((object)entry1) != null && ((object)entry2) != null)
+            if (((Object)entry1) != null && ((Object)entry2) != null)
             {
                 return ((entry1.ScancodeKey1 == entry2.ScancodeKey2) && (entry1.ExtendedKey1 == entry2.ExtendedKey2));
             }
             else
             {
-                if (((object)entry1) == null && ((object)entry2) == null)
+                if (((Object)entry1) == null && ((Object)entry2) == null)
                 {
                     return true;
                 }
@@ -502,21 +502,21 @@ namespace ScancodeMapping
             }
         }
 
-        public static bool operator !=(AdvancedMapping entry1, AdvancedMapping entry2)
+        public static Boolean operator !=(AdvancedMapping entry1, AdvancedMapping entry2)
         {
             return !(entry1 == entry2);
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return ((this.ScancodeKey1 & 0xFFFF) << 16) | (this.ExtendedKey1 & 0xFFFF);
         }
 
-        public override bool Equals(object obj)
+        public override Boolean Equals(Object obj)
         {
-            if (obj != null && obj is AdvancedMapping)
+            if (obj != null && obj is AdvancedMapping mapping)
             {
-                return ((this.ScancodeKey1 == ((AdvancedMapping)obj).ScancodeKey1) && (this.ExtendedKey1 == ((AdvancedMapping)obj).ExtendedKey1));
+                return ((this.ScancodeKey1 == mapping.ScancodeKey1) && (this.ExtendedKey1 == mapping.ExtendedKey1));
             }
             else
             {

@@ -23,6 +23,7 @@
  */
 
 using ScancodeHook.LowLevel;
+using System;
 using System.Drawing;
 
 namespace ScancodeMapping
@@ -30,13 +31,15 @@ namespace ScancodeMapping
     // The designer requires this class as the first part of this file!
     public class ControlKeyPanel : KeyPanel
     {
-        private const int LEFT = 629;
-        private const int TOP = 0;
-        private const int WIDTH = 168;
-        private const int HEIGHT = 270;
+        private const Int32 LEFT = 629;
+        private const Int32 TOP = 0;
+        private const Int32 WIDTH = 168;
+        private const Int32 HEIGHT = 270;
 
         #region Buttons' location, size and VK assignments.
-        private KeyButtonData[] buttonData = new KeyButtonData[]{
+
+        private readonly KeyButtonData[] buttonData = new KeyButtonData[]
+        {
             new KeyButtonData(21,  0,   42, 42, true, false, new KeyScan(VirtualKeys.VK_SNAPSHOT, 0x37, Keyboard.EXTENDED)),
             new KeyButtonData(63,  0,   42, 42, true, false, new KeyScan(VirtualKeys.VK_SCROLL,   0x46, Keyboard.STANDARD)),
             new KeyButtonData(105, 0,   42, 42, true, false, new KeyScan(VirtualKeys.VK_PAUSE,    0x45, Keyboard.STANDARD)),
@@ -51,12 +54,10 @@ namespace ScancodeMapping
             new KeyButtonData(63,  228, 42, 42, true, false, new KeyScan(VirtualKeys.VK_DOWN,     0x50, Keyboard.EXTENDED)),
             new KeyButtonData(105, 228, 42, 42, true, false, new KeyScan(VirtualKeys.VK_RIGHT,    0x4D, Keyboard.EXTENDED))
         };
+
         #endregion
 
-        //
-        // Summary:
-        //
-        public ControlKeyPanel(string name, int index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
+        public ControlKeyPanel(String name, Int32 index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
             : base(parent)
         {
             this.SuspendLayout();
@@ -70,18 +71,18 @@ namespace ScancodeMapping
             this.Initialize(alignment);
         }
 
-        //
-        // Summary:
-        //
         private void Initialize(TKeyboardAlignment alignment)
         {
-            for (int index = 0; index < buttonData.Length; index++)
+            for (Int32 index = 0; index < this.buttonData.Length; index++)
             {
-                KeyButton button = new KeyButton("CK" + index, (index + 1).ToString(), index, this);
-                button.Defaults = buttonData[index];
+                KeyButton button = new KeyButton("CK" + index, (index + 1).ToString(), index, this)
+                {
+                    Defaults = this.buttonData[index]
+                };
+
                 button.PrepareTooltip();
 
-                if (buttonData[index].Convert)
+                if (this.buttonData[index].Convert)
                 {
                     button.Text = Win32Wrapper.KeyText.GetKeyTextAtOnce(alignment, button.Keyscan, button.Text);
                 }

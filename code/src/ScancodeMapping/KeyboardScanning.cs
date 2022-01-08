@@ -35,34 +35,34 @@ namespace ScancodeMapping
     {
         public KeyboardScanning()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        public bool Filtered
+        public Boolean Filtered
         {
             get { return this.cbFiltered.Checked; }
             set { this.cbFiltered.Checked = value; }
         }
 
-        public bool Unique
+        public Boolean Unique
         {
             get { return this.cbUnique.Checked; }
             set { this.cbUnique.Checked = value; }
         }
 
-        public bool Pressed
+        public Boolean Pressed
         {
             get { return this.cbKeyPress.Checked; }
             set { this.cbKeyPress.Checked = value; }
         }
 
-        public bool Released
+        public Boolean Released
         {
             get { return this.cbKeyRelease.Checked; }
             set { this.cbKeyRelease.Checked = value; }
         }
 
-        public void HandleKeyScan(int vkeycode, int scancode, int flags, int time)
+        public void HandleKeyScan(Int32 vkeycode, Int32 scancode, Int32 flags, Int32 time)
         {
             // Filter messages only if requested.
             if (this.cbFiltered.Checked)
@@ -93,19 +93,19 @@ namespace ScancodeMapping
             }
 
             // Prepare key stoke name (keys can only be pressed or released)
-            string keyStoke = (Keyboard.IsKeyUp(flags) ? "released" : "pressed");
+            String keyStoke = Keyboard.IsKeyUp(flags) ? "released" : "pressed";
 
             // Only extended keys using additional information!
-            int extended = (Keyboard.IsExtended(flags) ? Keyboard.EXTENDED : Keyboard.STANDARD);
+            Int32 extended = Keyboard.IsExtended(flags) ? Keyboard.EXTENDED : Keyboard.STANDARD;
 
             // Prepare list item tag handle
-            string tagEntry = vkeycode.ToString("X4") + scancode.ToString("X4") + extended.ToString("X4") + flags.ToString("X8");
+            String tagEntry = vkeycode.ToString("X4") + scancode.ToString("X4") + extended.ToString("X4") + flags.ToString("X8");
 
             // Don't search the list if "unique" has to be recorded!
             ListViewItem item = null;
             if (this.Unique)
             {
-                for (int index = 0; index < this.lvScanData.Items.Count; index++)
+                for (Int32 index = 0; index < this.lvScanData.Items.Count; index++)
                 {
                     if (tagEntry.ToString() == this.lvScanData.Items[index].Tag.ToString())
                     {
@@ -117,7 +117,7 @@ namespace ScancodeMapping
 
             if (item == null) // This happens either if an entry doesn't yet exist or in "everything" mode!
             {
-                this.lvScanData.Items.Add(new ListViewItem(new string[] {
+                this.lvScanData.Items.Add(new ListViewItem(new String[] {
                     VirtualKeys.Name(vkeycode),
                     Win32Wrapper.GetKeyNameText(new KeyScan(vkeycode, scancode, extended)),
                     "0x" + vkeycode.ToString("X4"),
@@ -145,19 +145,19 @@ namespace ScancodeMapping
             this.lbCountValue.Text = this.lvScanData.Items.Count.ToString();
         }
 
-        private void KeyboardScanning_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnKeyboardScanningFormClosing(Object sender, FormClosingEventArgs args)
         {
             Keyboard.Instance.Unhook();
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
+        private void OnButtonCloseClick(Object sender, EventArgs args)
         {
             this.Close();
         }
 
-        private void btnAction_Click(object sender, EventArgs e)
+        private void OnButtonActionClick(Object sender, EventArgs args)
         {
-            if (btnAction.Text == "Start")
+            if (this.btnAction.Text == "Start")
             {
                 Keyboard.Instance.Hook(this, true);
                 this.btnAction.Text = "Stop";
@@ -169,16 +169,16 @@ namespace ScancodeMapping
             }
         }
 
-        private void lvContextMenu_Opening(object sender, CancelEventArgs eventArgs)
+        private void OnListViewContextMenuOpening(Object sender, CancelEventArgs args)
         {
-            eventArgs.Cancel = !(this.lvScanData.Items.Count > 0);
+            args.Cancel = !(this.lvScanData.Items.Count > 0);
 
             this.emptyMenuItem.Enabled = (this.lvScanData.Items.Count > 0);
             this.removeMenuItem.Enabled = (this.lvScanData.SelectedItems.Count > 0);
             this.exportMenuItem.Enabled = (this.lvScanData.Items.Count > 0) && !Keyboard.Instance.Hooked;
         }
 
-        private void emptyMenuItem_Click(object sender, EventArgs e)
+        private void OnEmptyMenuItemClick(Object sender, EventArgs args)
         {
             while (this.lvScanData.Items.Count > 0)
             {
@@ -187,34 +187,36 @@ namespace ScancodeMapping
             this.lbCountValue.Text = this.lvScanData.Items.Count.ToString();
         }
 
-        private void removeMenuItem_Click(object sender, EventArgs eventArgs)
+        private void OnRemoveMenuItemClick(Object sender, EventArgs args)
         {
             ListView.SelectedListViewItemCollection selected = this.lvScanData.SelectedItems;
 
-            for (int index = 0; index < selected.Count; index++)
+            for (Int32 index = 0; index < selected.Count; index++)
             {
                 selected[index].Remove();
             }
             this.lbCountValue.Text = this.lvScanData.Items.Count.ToString();
         }
 
-        private void exportMenuItem_Click(object sender, EventArgs e)
+        private void OnExportMenuItemClick(Object sender, EventArgs args)
         {
-            SaveFileDialog save = new SaveFileDialog();
-            save.Filter = "Excel-CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-            save.AutoUpgradeEnabled = true;
-            save.CheckFileExists = false;
-            save.RestoreDirectory = true;
+            SaveFileDialog save = new SaveFileDialog()
+            {
+                Filter = "Excel-CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+                AutoUpgradeEnabled = true,
+                CheckFileExists = false,
+                RestoreDirectory = true
+            };
 
             if (save.ShowDialog() == DialogResult.OK)
             {
                 Cursor oldCursor = this.Cursor;
                 this.Cursor = Cursors.WaitCursor;
                 TextWriter outfile = new StreamWriter(save.FileName, false, Encoding.Unicode);
-                string outstring = "";
+                String outstring = String.Empty;
 
                 // Output header information.
-                for (int index = 0; index < this.lvScanData.Columns.Count; index++)
+                for (Int32 index = 0; index < this.lvScanData.Columns.Count; index++)
                 {
                     outstring += this.lvScanData.Columns[index].Text;
                     if (index < this.lvScanData.Columns.Count - 1)
@@ -223,14 +225,14 @@ namespace ScancodeMapping
                     }
                 }
                 outfile.WriteLine(outstring);
-                outstring = "";
+                outstring = String.Empty;
 
                 // Output data rows.
-                for (int outer = 0; outer < this.lvScanData.Items.Count; outer++)
+                for (Int32 outer = 0; outer < this.lvScanData.Items.Count; outer++)
                 {
                     ListViewItem item = this.lvScanData.Items[outer];
 
-                    for (int inner = 0; inner < item.SubItems.Count; inner++)
+                    for (Int32 inner = 0; inner < item.SubItems.Count; inner++)
                     {
                         outstring += item.SubItems[inner].Text;
                         if (inner < item.SubItems.Count - 1)
@@ -240,7 +242,7 @@ namespace ScancodeMapping
                     }
 
                     outfile.WriteLine(outstring);
-                    outstring = "";
+                    outstring = String.Empty;
                 }
                 outfile.Close();
                 this.Cursor = oldCursor;

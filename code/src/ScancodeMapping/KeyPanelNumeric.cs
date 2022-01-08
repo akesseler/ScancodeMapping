@@ -23,6 +23,7 @@
  */
 
 using ScancodeHook.LowLevel;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -31,17 +32,19 @@ namespace ScancodeMapping
     // The designer requires this class as the first part of this file!
     public class NumericKeyPanel : KeyPanel
     {
-        private const int LEFT = 797;
-        private const int TOP = 0;
-        private const int WIDTH = 168;
-        private const int HEIGHT = 270;
+        private const Int32 LEFT = 797;
+        private const Int32 TOP = 0;
+        private const Int32 WIDTH = 168;
+        private const Int32 HEIGHT = 270;
 
         private PictureBox numLockBox;
         private PictureBox capsLockBox;
         private PictureBox scrollLockBox;
 
         #region Buttons' location, size and VK assignments.
-        private KeyButtonData[] buttonData = new KeyButtonData[]{
+
+        private readonly KeyButtonData[] buttonData = new KeyButtonData[]
+        {
             new KeyButtonData(0,   60,  42, 42, true, false, new KeyScan(VirtualKeys.VK_NUMLOCK,  0x45, Keyboard.EXTENDED)),
             new KeyButtonData(42,  60,  42, 42, true, false, new KeyScan(VirtualKeys.VK_DIVIDE,   0x35, Keyboard.EXTENDED)),
             new KeyButtonData(84,  60,  42, 42, true, false, new KeyScan(VirtualKeys.VK_MULTIPLY, 0x37, Keyboard.STANDARD)),
@@ -60,12 +63,10 @@ namespace ScancodeMapping
             new KeyButtonData(0,   228, 84, 42, true, false, new KeyScan(VirtualKeys.VK_NUMPAD0,  0x52, Keyboard.STANDARD)),
             new KeyButtonData(84,  228, 42, 42, true, false, new KeyScan(VirtualKeys.VK_DECIMAL,  0x53, Keyboard.STANDARD))
         };
+
         #endregion
 
-        //
-        // Summary:
-        //
-        public NumericKeyPanel(string name, int index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
+        public NumericKeyPanel(String name, Int32 index, Point offset, TKeyboardAlignment alignment, KeyboardPanel parent)
             : base(parent)
         {
             this.SuspendLayout();
@@ -79,18 +80,18 @@ namespace ScancodeMapping
             this.Initialize(alignment);
         }
 
-        //
-        // Summary:
-        //
         private void Initialize(TKeyboardAlignment alignment)
         {
-            for (int index = 0; index < buttonData.Length; index++)
+            for (Int32 index = 0; index < this.buttonData.Length; index++)
             {
-                KeyButton button = new KeyButton("NK" + index, (index + 1).ToString(), index, this);
-                button.Defaults = buttonData[index];
+                KeyButton button = new KeyButton("NK" + index, (index + 1).ToString(), index, this)
+                {
+                    Defaults = this.buttonData[index]
+                };
+
                 button.PrepareTooltip();
 
-                if (buttonData[index].Convert)
+                if (this.buttonData[index].Convert)
                 {
                     button.Text = Win32Wrapper.KeyText.GetKeyTextAtOnce(alignment, button.Keyscan, button.Text);
                 }
@@ -102,11 +103,13 @@ namespace ScancodeMapping
             }
 
             #region Create NUM_LOCK_LED component.
+
             this.numLockBox = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numLockBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.numLockBox).BeginInit();
             this.numLockBox.Location = new Point(21, 0);
             this.numLockBox.Size = new Size(42, 7);
             this.numLockBox.SizeMode = PictureBoxSizeMode.CenterImage;
+
             if (KeyStates.NumLock)
             {
                 this.numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
@@ -115,16 +118,21 @@ namespace ScancodeMapping
             {
                 this.numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
+
             this.Controls.Add(this.numLockBox);
-            ((System.ComponentModel.ISupportInitialize)(this.numLockBox)).EndInit();
+
+            ((System.ComponentModel.ISupportInitialize)this.numLockBox).EndInit();
+
             #endregion
 
             #region Create CAPS_LOCK_LED component.
+
             this.capsLockBox = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.capsLockBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.capsLockBox).BeginInit();
             this.capsLockBox.Location = new Point(63, 0);
             this.capsLockBox.Size = new Size(42, 7);
             this.capsLockBox.SizeMode = PictureBoxSizeMode.CenterImage;
+
             if (KeyStates.CapsLock)
             {
                 this.capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
@@ -133,16 +141,21 @@ namespace ScancodeMapping
             {
                 this.capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
+
             this.Controls.Add(this.capsLockBox);
-            ((System.ComponentModel.ISupportInitialize)(this.capsLockBox)).EndInit();
+
+            ((System.ComponentModel.ISupportInitialize)this.capsLockBox).EndInit();
+
             #endregion
 
             #region Create SCROLL_LOCK_LED component.
+
             this.scrollLockBox = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.scrollLockBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.scrollLockBox).BeginInit();
             this.scrollLockBox.Location = new Point(105, 0);
             this.scrollLockBox.Size = new Size(42, 7);
             this.scrollLockBox.SizeMode = PictureBoxSizeMode.CenterImage;
+
             if (KeyStates.ScrollLock)
             {
                 this.scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
@@ -151,53 +164,47 @@ namespace ScancodeMapping
             {
                 this.scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
+
             this.Controls.Add(this.scrollLockBox);
-            ((System.ComponentModel.ISupportInitialize)(this.scrollLockBox)).EndInit();
+
+            ((System.ComponentModel.ISupportInitialize)this.scrollLockBox).EndInit();
+
             #endregion
         }
 
-        //
-        // Summary:
-        //
-        public void NumLock(bool ledOn)
+        public void NumLock(Boolean ledOn)
         {
             if (ledOn)
             {
-                numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
+                this.numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
             }
             else
             {
-                numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
+                this.numLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
         }
 
-        //
-        // Summary:
-        //
-        public void CapsLock(bool ledOn)
+        public void CapsLock(Boolean ledOn)
         {
             if (ledOn)
             {
-                capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
+                this.capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
             }
             else
             {
-                capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
+                this.capsLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
         }
 
-        //
-        // Summary:
-        //
-        public void ScrollLock(bool ledOn)
+        public void ScrollLock(Boolean ledOn)
         {
             if (ledOn)
             {
-                scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
+                this.scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDon;
             }
             else
             {
-                scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
+                this.scrollLockBox.Image = global::ScancodeMapping.Properties.Resources.LEDoff;
             }
         }
     }

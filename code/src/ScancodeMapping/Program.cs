@@ -31,14 +31,14 @@ namespace ScancodeMapping
     {
         private static MainForm mainForm;
 
-        public static MainForm GetMainForm() { return mainForm; }
+        public static MainForm GetMainForm() { return App.mainForm; }
 
         public App()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            mainForm = new MainForm();
-            Application.Run(mainForm);
+            App.mainForm = new MainForm();
+            Application.Run(App.mainForm);
         }
     }
 

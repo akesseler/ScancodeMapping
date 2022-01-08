@@ -96,9 +96,10 @@ public class SystemMenu
     // Retrieves a new object from a Form object
     public static SystemMenu GetSystemMenu(Form form)
     {
-        SystemMenu result = new SystemMenu();
-
-        result.hSysMenu = GetSystemMenu(form.Handle, false);
+        SystemMenu result = new SystemMenu()
+        {
+            hSysMenu = SystemMenu.GetSystemMenu(form.Handle, false)
+        };
 
         if (result.hSysMenu == IntPtr.Zero)
         {
@@ -109,82 +110,78 @@ public class SystemMenu
     }
 
     // Returns a menu item's position for given menu item command ID.
-    public int FindPositionByCommandID(int commandID)
+    public Int32 FindPositionByCommandID(Int32 commandId)
     {
-        int count = GetMenuItemCount(hSysMenu);
-        for (int index = 0; index < count; index++)
+        Int32 count = SystemMenu.GetMenuItemCount(this.hSysMenu);
+        for (Int32 index = 0; index < count; index++)
         {
-            if (commandID == GetMenuItemID(hSysMenu, index))
+            if (commandId == SystemMenu.GetMenuItemID(this.hSysMenu, index))
             {
                 return index;
             }
         }
-        throw new IndexOutOfRangeException("Menu with command ID 0x" + commandID.ToString("X8") + " not found.");
+        throw new IndexOutOfRangeException("Menu with command ID 0x" + commandId.ToString("X8") + " not found.");
     }
 
     // Insert a separator at the given position; index starts at zero.
-    public bool InsertSeparator(int position)
+    public Boolean InsertSeparator(Int32 position)
     {
-        return InsertMenu(position, MenuFlags.MF_SEPARATOR | MenuFlags.MF_BYPOSITION, 0, "");
+        return this.InsertMenu(position, MenuFlags.MF_SEPARATOR | MenuFlags.MF_BYPOSITION, 0, "");
     }
 
     // Insert a menu at the given position; index starts at zero.
-    public bool InsertMenu(int position, int itemID, String itemName)
+    public Boolean InsertMenu(Int32 position, Int32 itemID, String itemName)
     {
-        return InsertMenu(position, MenuFlags.MF_BYPOSITION | MenuFlags.MF_STRING, itemID, itemName);
+        return this.InsertMenu(position, MenuFlags.MF_BYPOSITION | MenuFlags.MF_STRING, itemID, itemName);
     }
 
     // Insert a menu at the given position using flags; index starts at zero.
-    public bool InsertMenu(int position, MenuFlags flags, int itemID, String itemName)
+    public Boolean InsertMenu(Int32 position, MenuFlags flags, Int32 itemID, String itemName)
     {
-        return InsertMenu(hSysMenu, position, (int)flags, itemID, itemName);
+        return SystemMenu.InsertMenu(this.hSysMenu, position, (Int32)flags, itemID, itemName);
     }
 
     // Appends a seperator
-    public bool AppendSeparator()
+    public Boolean AppendSeparator()
     {
         return this.AppendMenu(0, "", MenuFlags.MF_SEPARATOR);
     }
 
     // Appent a menu (MF_STRING only) with given item ID.
-    public bool AppendMenu(int itemID, String itemName)
+    public Boolean AppendMenu(Int32 itemID, String itemName)
     {
         return this.AppendMenu(itemID, itemName, MenuFlags.MF_STRING);
     }
 
     // Appent a menu (MF_STRING only) with given item ID using flags.
-    public bool AppendMenu(int itemID, String itemName, MenuFlags flags)
+    public Boolean AppendMenu(Int32 itemID, String itemName, MenuFlags flags)
     {
-        return AppendMenu(hSysMenu, (int)flags, itemID, itemName);
+        return SystemMenu.AppendMenu(this.hSysMenu, (Int32)flags, itemID, itemName);
     }
 
     // Reset's the window menu to it's default
     public static void ResetSystemMenu(Form form)
     {
-        GetSystemMenu(form.Handle, true);
+        SystemMenu.GetSystemMenu(form.Handle, true);
     }
-
-    //
-    // DLL import section.
-    //
 
     [DllImport("user32.dll", EntryPoint = "GetSystemMenu", SetLastError = true, CharSet = CharSet.Unicode,
         ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+    private static extern IntPtr GetSystemMenu(IntPtr hWnd, Boolean bRevert);
 
     [DllImport("user32.dll", EntryPoint = "AppendMenuW", SetLastError = true, CharSet = CharSet.Unicode,
         ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern bool AppendMenu(IntPtr hMenu, int flags, int itemID, String itemName);
+    private static extern Boolean AppendMenu(IntPtr hMenu, Int32 flags, Int32 itemID, String itemName);
 
     [DllImport("user32.dll", EntryPoint = "InsertMenuW", SetLastError = true, CharSet = CharSet.Unicode,
         ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern bool InsertMenu(IntPtr hMenu, int position, int flags, int itemID, String itemName);
+    private static extern Boolean InsertMenu(IntPtr hMenu, Int32 position, Int32 flags, Int32 itemID, String itemName);
 
     [DllImport("user32.dll", EntryPoint = "GetMenuItemCount", SetLastError = true,
         ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int GetMenuItemCount(IntPtr hMenu);
+    private static extern Int32 GetMenuItemCount(IntPtr hMenu);
 
     [DllImport("user32.dll", EntryPoint = "GetMenuItemID", SetLastError = true,
         ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int GetMenuItemID(IntPtr hMenu, int pos);
+    private static extern Int32 GetMenuItemID(IntPtr hMenu, Int32 pos);
 }

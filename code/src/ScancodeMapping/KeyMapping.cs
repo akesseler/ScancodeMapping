@@ -31,23 +31,23 @@ namespace ScancodeMapping
 {
     public partial class KeyMapping : Form
     {
-        private KeyButton currentButton = null;
-        private Dictionary<string, KeyButton> usedButtons = null;
+        private readonly KeyButton currentButton = null;
+        private Dictionary<String, KeyButton> usedButtons = null;
 
         public KeyMapping(KeyButton currentButton)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.currentButton = currentButton;
         }
 
-        private void KeyMapping_Load(object sender, EventArgs e)
+        private void OnKeyMappingLoad(Object sender, EventArgs args)
         {
             ArrayList buttons = App.GetMainForm().CollectButtons();
             buttons.Sort(new KeyButtonSorter());
 
-            this.usedButtons = new Dictionary<string, KeyButton>(buttons.Count);
+            this.usedButtons = new Dictionary<String, KeyButton>(buttons.Count);
 
-            for (int index = 0; index < buttons.Count; index++)
+            for (Int32 index = 0; index < buttons.Count; index++)
             {
                 this.usedButtons.Add(buttons[index].ToString(), (KeyButton)buttons[index]);
                 this.buttonsCombo.Items.Add(buttons[index].ToString());
@@ -63,12 +63,12 @@ namespace ScancodeMapping
             }
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
+        private void OnCloseButtonClick(Object sender, EventArgs args)
         {
             this.Close();
         }
 
-        private void applyButton_Click(object sender, EventArgs e)
+        private void OnApplyButtonClick(Object sender, EventArgs args)
         {
             if (this.restoreRadioButton.Checked)
             {
@@ -80,10 +80,9 @@ namespace ScancodeMapping
             }
             else if (this.remapRadioButton.Checked)
             {
-                KeyButton remapButton = null;
-                if (this.usedButtons.TryGetValue(this.buttonsCombo.SelectedItem.ToString(), out remapButton))
+                if (this.usedButtons.TryGetValue(this.buttonsCombo.SelectedItem.ToString(), out KeyButton remapButton))
                 {
-                    if (!currentButton.Equals(remapButton))
+                    if (!this.currentButton.Equals(remapButton))
                     {
                         this.currentButton.RemapButton(remapButton);
                     }
@@ -95,23 +94,23 @@ namespace ScancodeMapping
             }
         }
 
-        private void advancedButton_Click(object sender, EventArgs e)
+        private void OnAdvancedButtonClick(Object sender, EventArgs args)
         {
             this.DialogResult = DialogResult.Retry;
             this.Close();
         }
 
-        private void disableRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void OnDisableRadioButtonCheckedChanged(Object sender, EventArgs args)
         {
             this.buttonsCombo.Enabled = false;
         }
 
-        private void restoreRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void OnRestoreRadioButtonCheckedChanged(Object sender, EventArgs args)
         {
             this.buttonsCombo.Enabled = false;
         }
 
-        private void remapRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void OnRemapRadioButtonCheckedChanged(Object sender, EventArgs args)
         {
             this.buttonsCombo.Enabled = true;
         }

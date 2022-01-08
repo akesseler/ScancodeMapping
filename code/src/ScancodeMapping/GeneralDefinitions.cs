@@ -53,12 +53,10 @@ namespace ScancodeMapping
 
     public static class Win32Wrapper
     {
-        // Summary:
-        //
-        public static string GetKeyboardLayoutName()
+        public static String GetKeyboardLayoutName()
         {
-            const int KL_NAMELENGTH = 9; // WinUser.h
-            string theResult = "";
+            const Int32 KL_NAMELENGTH = 9; // WinUser.h
+            String theResult = String.Empty;
 
             // Create a buffer and call Win32 API to obtain the keyboard layout name.
             StringBuilder lpString = new StringBuilder(KL_NAMELENGTH);
@@ -69,15 +67,13 @@ namespace ScancodeMapping
             return theResult;
         }
 
-        // Summary:
-        //
-        public static string GetKeyNameText(KeyScan keyScan, string original)
+        public static String GetKeyNameText(KeyScan keyScan, String original)
         {
-            string theResult = original;
+            String theResult = original;
 
             if (null != keyScan)
             {
-                if (VirtualKeys.Display(keyScan.VKeyCode) != "")
+                if (VirtualKeys.Display(keyScan.VKeyCode) != String.Empty)
                 {
                     theResult = VirtualKeys.Display(keyScan.VKeyCode);
                 }
@@ -89,12 +85,10 @@ namespace ScancodeMapping
             return theResult;
         }
 
-        // Summary:
-        //
-        public static string GetKeyNameText(KeyScan keyScan)
+        public static String GetKeyNameText(KeyScan keyScan)
         {
-            string theResult = "";
-            int lParam = 0;
+            String theResult = String.Empty;
+            Int32 lParam = 0;
 
             if (null != keyScan)
             {
@@ -135,7 +129,7 @@ namespace ScancodeMapping
 
                 // Create a buffer and call Win32 API to obtain the display text.
                 StringBuilder lpString = new StringBuilder(100);
-                int nSize = lpString.Capacity;
+                Int32 nSize = lpString.Capacity;
                 if (0 != GetKeyNameText((lParam << 16), lpString, nSize))
                 {
                     theResult = lpString.ToString();
@@ -162,34 +156,34 @@ namespace ScancodeMapping
             // http://www.microsoft.com/resources/msdn/goglobal/keyboards/kbdgr1.htm (DE, IBM)
             // http://www.microsoft.com/resources/msdn/goglobal/keyboards/kbdgr.htm  (DE)
 
-            private const int KLF_NOTELLSHELL = 0x00000080;  // winuser.h
-            private const int MAPVK_VK_TO_VSC = 0;  // winuser.h
+            private const Int32 KLF_NOTELLSHELL = 0x00000080;  // winuser.h
+#pragma warning disable IDE0051 // Remove unused private members
+            private const Int32 MAPVK_VK_TO_VSC = 0;  // winuser.h
+#pragma warning restore IDE0051 // Remove unused private members
 
-            private static int hLayout = 0; // Handle to loaded layout.
+            private static Int32 hLayout = 0; // Handle to loaded layout.
 
-
-            public static string GetKeyTextAtOnce(TKeyboardAlignment alignment, KeyScan keyScan, string original)
+            public static String GetKeyTextAtOnce(TKeyboardAlignment alignment, KeyScan keyScan, String original)
             {
-                string result;
-                Load(alignment);
+                String result;
+
+                KeyText.Load(alignment);
 
                 result = GetKeyText(keyScan);
 
-                if (result == "")
+                if (result == String.Empty)
                 {
                     result = GetKeyNameText(keyScan, original);
                 }
 
-                Unload();
+                KeyText.Unload();
 
                 return result;
             }
 
-            // Summary:
-            //
             public static void Load(TKeyboardAlignment alignment)
             {
-                string layout = "";
+                String layout = String.Empty;
 
                 if (hLayout == 0)
                 {
@@ -211,21 +205,19 @@ namespace ScancodeMapping
                 }
             }
 
-            // Summary:
-            //
-            public static string GetKeyText(KeyScan keyScan)
+            public static String GetKeyText(KeyScan keyScan)
             {
                 if (hLayout == 0)
                 {
                     throw new ArgumentException("The keyboard layout is not yet loaded!");
                 }
 
-                string theResult = "";
-                ushort theValue = 0;
-                char theReturn = '\0';
-                byte[] keyState = new byte[256];
+                String theResult = String.Empty;
+                UInt16 theValue = 0;
+                Char theReturn = '\0';
+                Byte[] keyState = new Byte[256];
 
-                int result = ToAsciiEx(keyScan.VKeyCode, keyScan.Scancode, keyState, ref theValue, 0, hLayout);
+                Int32 result = Win32Wrapper.ToAsciiEx(keyScan.VKeyCode, keyScan.Scancode, keyState, ref theValue, 0, hLayout);
 
                 if (result != 0)
                 {
@@ -244,41 +236,39 @@ namespace ScancodeMapping
                         // In case of a dead character empty keyboard buffer in the shown way!
                         if (result < 0)
                         {
-                            ToAsciiEx(VirtualKeys.VK_SPACE, 0, keyState, ref theValue, 0, hLayout);
+                            Win32Wrapper.ToAsciiEx(VirtualKeys.VK_SPACE, 0, keyState, ref theValue, 0, hLayout);
                         }
                     }
                 }
-                return theResult;//.ToUpper();
+                return theResult;
             }
 
-            // Summary:
-            //
             public static void Unload()
             {
                 if (hLayout != 0)
                 {
-                    UnloadKeyboardLayout(hLayout);
+                    Win32Wrapper.UnloadKeyboardLayout(hLayout);
                     hLayout = 0;
                 }
             }
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int GetKeyNameText(int lParam, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpString, int nSize);
+        public static extern Int32 GetKeyNameText(Int32 lParam, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpString, Int32 nSize);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern bool GetKeyboardLayoutName([Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpString);
+        public static extern Boolean GetKeyboardLayoutName([Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpString);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int LoadKeyboardLayout(string pwszKLID, int flags);
+        public static extern Int32 LoadKeyboardLayout(String pwszKLID, Int32 flags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern bool UnloadKeyboardLayout(int hLayout);
+        public static extern Boolean UnloadKeyboardLayout(Int32 hLayout);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int ToAsciiEx(int uVirtKey, int uScanCode, byte[] lpKeyState, ref ushort lpChar, int flags, int hLayout);
+        public static extern Int32 ToAsciiEx(Int32 uVirtKey, Int32 uScanCode, Byte[] lpKeyState, ref UInt16 lpChar, Int32 flags, Int32 hLayout);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int MapVirtualKeyEx(int uCode, int uMapType, int dwhLayout);
+        public static extern Int32 MapVirtualKeyEx(Int32 uCode, Int32 uMapType, Int32 dwhLayout);
     }
 }
